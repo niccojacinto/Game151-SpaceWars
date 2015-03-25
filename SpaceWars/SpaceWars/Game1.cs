@@ -57,8 +57,11 @@ namespace SpaceWars {
 
             // TODO: Add your update logic here
             activeScreen.Update (gameTime, GraphicsDevice);
+            activeScreen.UpdateInput ( Keyboard.GetState() );
             base.Update ( gameTime );
         }
+
+
 
         protected override void Draw ( GameTime gameTime ) {
             GraphicsDevice.Clear ( Color.CornflowerBlue );

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +58,25 @@ namespace SpaceWars {
             foreach (Asteroid asteroid in asteroids) {
                 asteroid.Update (gameTime, Device);
             }
+
         }
+
+        public void UpdateInput (KeyboardState keyState) {
+            if ( keyState.IsKeyDown (Keys.A) ) {
+                player1.AimLeft ();
+            }
+            else if ( keyState.IsKeyDown ( Keys.D) ) {
+                player1.AimRight ();
+            }
+
+            if ( keyState.IsKeyDown ( Keys.NumPad4 ) ) {
+                player2.AimLeft ();
+            }
+            else if ( keyState.IsKeyDown ( Keys.NumPad6 ) ) {
+                player2.AimRight ();
+            }
+        }
+        
 
         public virtual void Draw ( SpriteBatch spriteBatch ) {
             if ( _active ) {
