@@ -28,16 +28,6 @@ namespace SpaceWars {
                 _origin = new Vector2 ( _texture.Width / 2, _texture.Height / 2 );
             }
         }
-        
-        // Base Constructor : for Text UI elements
-        public GameObject ( String text, SpriteFont font, float size ) {
-            // TODO : complete constuctor for text elements
-        }
-
-
-
-        public virtual void Update (GameTime gameTime) {
-        }
 
         public virtual void Draw (SpriteBatch spriteBatch) {
             // texture, position, source rectangle, color, rotation, origin, scale, effects, and layer.

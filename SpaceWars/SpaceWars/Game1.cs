@@ -56,7 +56,7 @@ namespace SpaceWars {
                 Exit ();
 
             // TODO: Add your update logic here
-            activeScreen.Update (gameTime);
+            activeScreen.Update (gameTime, GraphicsDevice);
             base.Update ( gameTime );
         }
 
