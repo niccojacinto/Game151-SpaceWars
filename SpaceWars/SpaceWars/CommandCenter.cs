@@ -10,31 +10,34 @@ namespace SpaceWars {
     class CommandCenter : GameObject {
 
         Texture2D line;
+        static ContentManager _content;
+        static GraphicsDevice _Device;
         private float _launchAngle;
+        public Weapon _currentActive; // Missile currently launched
+        public Weapon _currentWeapon; // Weapon currently selected
 
         public CommandCenter (ContentManager content, GraphicsDevice Device, Vector2 position)
             :base(content.Load<Texture2D>("Sprites/command_center"), position, 0.1f, 0.0f, true, SpriteEffects.None)
         {
             _position = position;
-
             _launchAngle = 0.0f;
+            _content = content;
+            _Device = Device;
 
-            line = new Texture2D ( Device, 1, 1 );
+            line = new Texture2D ( _Device, 1, 1 );
             line.SetData<Color> (
-                new Color[] { Color.White } );// fill the texture with Red
+                new Color[] { Color.White } );// fill the texture with White
             
         }
 
         public void Update ( GameTime gameTime ) {
-
             _rotation += 0.01f;
-            Console.WriteLine ( _launchAngle );
+            if (_currentActive != null)
+                _currentActive.Update ( gameTime );
         }
 
         void DrawLine ( SpriteBatch sb, Vector2 start ) {
             
-
-
             sb.Draw ( line,
                 new Rectangle (// rectangle defines shape of line and position of start of line
                     (int)start.X,
@@ -52,6 +55,8 @@ namespace SpaceWars {
 
         public void Draw (SpriteBatch spriteBatch) {
             base.Draw (spriteBatch);
+            if (_currentActive != null)
+                _currentActive.Draw ( spriteBatch );
             DrawLine ( spriteBatch,  _position );
         }
 
@@ -62,6 +67,10 @@ namespace SpaceWars {
 
         public void AimRight () {
             _launchAngle+=0.1f;
+        }
+
+        public void Launch () {
+            _currentActive = new Weapon ( _content, _Device, _position, _launchAngle );
         }
 
     }

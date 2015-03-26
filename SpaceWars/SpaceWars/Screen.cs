@@ -62,18 +62,34 @@ namespace SpaceWars {
         }
 
         public void UpdateInput (KeyboardState keyState) {
-            if ( keyState.IsKeyDown (Keys.A) ) {
-                player1.AimLeft ();
+            if ( player1._currentActive == null ) {
+                if ( keyState.IsKeyDown ( Keys.A ) ) {
+                    player1.AimLeft ();
+                }
+                else if ( keyState.IsKeyDown ( Keys.D ) ) {
+                    player1.AimRight ();
+                }
+
+                if ( keyState.IsKeyDown ( Keys.W ) ) {
+                    player1.Launch ();
+                }
             }
-            else if ( keyState.IsKeyDown ( Keys.D) ) {
-                player1.AimRight ();
+            else {
+                if ( keyState.IsKeyDown ( Keys.A ) ) {
+                    player1._currentActive.TurnLeft ();
+                }
+                else if ( keyState.IsKeyDown ( Keys.D ) ) {
+                    player1._currentActive.TurnRight ();
+                }
             }
 
-            if ( keyState.IsKeyDown ( Keys.NumPad4 ) ) {
-                player2.AimLeft ();
-            }
-            else if ( keyState.IsKeyDown ( Keys.NumPad6 ) ) {
-                player2.AimRight ();
+            if ( player2._currentActive == null ) {
+                if ( keyState.IsKeyDown ( Keys.NumPad4 ) ) {
+                    player2.AimLeft ();
+                }
+                else if ( keyState.IsKeyDown ( Keys.NumPad6 ) ) {
+                    player2.AimRight ();
+                }
             }
         }
         
