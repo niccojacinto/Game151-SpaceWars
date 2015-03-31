@@ -43,7 +43,7 @@ namespace SpaceWars {
             //screenVictory = new Screen ( );
             //screenMainMenu = new Screen ( );
             activeScreen = screenGame;
-           
+ 
             
         }
 
@@ -56,8 +56,7 @@ namespace SpaceWars {
                 Exit ();
 
             // TODO: Add your update logic here
-            activeScreen.Update (gameTime, GraphicsDevice);
-            activeScreen.UpdateInput ( Keyboard.GetState() );
+            activeScreen.Update (gameTime, GraphicsDevice, Keyboard.GetState() );
             base.Update ( gameTime );
         }
 

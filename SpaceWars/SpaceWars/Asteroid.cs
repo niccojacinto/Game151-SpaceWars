@@ -11,8 +11,8 @@ namespace SpaceWars {
 
         public Vector2 _velocity;
 
-        public Asteroid ( ContentManager content, GraphicsDevice Device, Vector2 position )
-            : base ( content.Load<Texture2D> ( "Sprites/asteroid" ), position, 0.1f, 0.0f, true, SpriteEffects.None ) {
+        public Asteroid ( Texture2D texture, Vector2 position )
+            : base ( texture, position, 0.1f, 0.0f, true, SpriteEffects.None ) {
             _position = position;
 
         }

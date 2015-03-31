@@ -10,19 +10,19 @@ namespace SpaceWars {
     class CommandCenter : GameObject {
 
         Texture2D line;
-        static ContentManager _content;
         static GraphicsDevice _Device;
         private float _launchAngle;
         public Weapon _currentActive; // Missile currently launched
         public Weapon _currentWeapon; // Weapon currently selected
+        Texture2D texGeminiMissile;
 
-        public CommandCenter (ContentManager content, GraphicsDevice Device, Vector2 position)
-            :base(content.Load<Texture2D>("Sprites/command_center"), position, 0.1f, 0.0f, true, SpriteEffects.None)
+        public CommandCenter (GraphicsDevice Device, Texture2D texture, Texture2D weapon, Vector2 position)
+            :base(texture, position, 0.1f, 0.0f, true, SpriteEffects.None)
         {
             _position = position;
             _launchAngle = 0.0f;
-            _content = content;
             _Device = Device;
+            texGeminiMissile = weapon;
 
             line = new Texture2D ( _Device, 1, 1 );
             line.SetData<Color> (
@@ -53,7 +53,7 @@ namespace SpaceWars {
 
         }
 
-        public void Draw (SpriteBatch spriteBatch) {
+        public override void Draw (SpriteBatch spriteBatch) {
             base.Draw (spriteBatch);
             if (_currentActive != null)
                 _currentActive.Draw ( spriteBatch );
@@ -70,7 +70,7 @@ namespace SpaceWars {
         }
 
         public void Launch () {
-            _currentActive = new Weapon ( _content, _Device, _position, _launchAngle );
+            _currentActive = new Weapon ( texGeminiMissile, _position, _launchAngle );
         }
 
     }
