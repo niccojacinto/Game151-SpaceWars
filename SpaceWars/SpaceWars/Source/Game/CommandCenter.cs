@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace SpaceWars {
-    class CommandCenter : GameObject {
+    public class CommandCenter : GameObject {
 
         Texture2D line;
         static GraphicsDevice _Device;
