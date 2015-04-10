@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace SpaceWars {
-    class Weapon : GameObject{
+    public class Weapon : GameObject{
 
         private Vector2 _velocity;
         private float _speedMultiplier;

@@ -10,11 +10,9 @@ using Microsoft.Xna.Framework.GamerServices;
 #endregion
 
 namespace SpaceWars {
-
     public class Game1 : Game {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        Screen screenGame, screenVictory, screenMainMenu;
+        public GraphicsDeviceManager graphics;
+        public SpriteBatch spriteBatch;
         Screen activeScreen;
 
         public Game1 ()
@@ -24,53 +22,48 @@ namespace SpaceWars {
             graphics.PreferredBackBufferWidth = 1080;  // set this value to the desired width of your window
             graphics.PreferredBackBufferHeight = 640;   // set this value to the desired height of your window
             graphics.ApplyChanges ();
-        }
-
+        }// public Game1 ()
 
         protected override void Initialize () {
             // TODO: Add your initialization logic here
-
             base.Initialize ();
-        }
-
+            #if DEBUG
+                System.Console.WriteLine("Testing debug statement");
+            #endif
+        } //protected override void Initialize () {
 
         protected override void LoadContent () {
-
             spriteBatch = new SpriteBatch ( GraphicsDevice );
-
+            activeScreen = new GameScreen();
             // TODO: use this.Content to load your game content here
-            screenGame = new Screen ( Content, GraphicsDevice );
-            //screenVictory = new Screen ( );
-            //screenMainMenu = new Screen ( );
-            activeScreen = screenGame;
- 
-            
-        }
+        }//protected override void LoadContent () {
 
         protected override void UnloadContent () {
             // TODO: Unload any non ContentManager content here
-        }
+        }//protected override void UnloadContent () {
 
         protected override void Update ( GameTime gameTime ) {
-            if ( GamePad.GetState ( PlayerIndex.One ).Buttons.Back == ButtonState.Pressed || Keyboard.GetState ().IsKeyDown ( Keys.Escape ) )
-                Exit ();
-
-            // TODO: Add your update logic here
-            activeScreen.Update (gameTime, GraphicsDevice, Keyboard.GetState() );
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                { Exit(); }
+            activeScreen.Update (gameTime, Keyboard.GetState() );
             base.Update ( gameTime );
-        }
-
-
+        }// protected override void Update ( GameTime gameTime ) {
 
         protected override void Draw ( GameTime gameTime ) {
+            //Clear screen
             GraphicsDevice.Clear ( Color.CornflowerBlue );
 
-            // TODO: Add your drawing code here
+            //Draw stuff all over screen
             spriteBatch.Begin ();
-            activeScreen.Draw (spriteBatch);
+            activeScreen.Draw ();
             spriteBatch.End ();
-
             base.Draw ( gameTime );
-        }
+        }//protected override void Draw ( GameTime gameTime ) {
+
+        /* Sets the active screen of the game */
+        public void setScreen(Screen screen){
+            //TODO destroy/garbage collect active screen..?
+            activeScreen = screen;
+        }//public void setScreen(Screen screen)
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceWars {
-    class GameObject {
+    public class GameObject {
 
         protected Texture2D _texture;
         protected Vector2 _position;

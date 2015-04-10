@@ -11,6 +11,21 @@
     <RootNamespace>SpaceWars</RootNamespace>
     <AssemblyName>SpaceWars</AssemblyName>
     <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -35,14 +50,15 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Asteroid.cs" />
-    <Compile Include="CommandCenter.cs" />
-    <Compile Include="Game1.cs" />
-    <Compile Include="GameObject.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Source\Game\Asteroid.cs" />
+    <Compile Include="Source\Game\CommandCenter.cs" />
+    <Compile Include="Source\Game1.cs" />
+    <Compile Include="Source\Game\GameObject.cs" />
+    <Compile Include="Source\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Screen.cs" />
-    <Compile Include="Weapon.cs" />
+    <Compile Include="Source\Screens\GameScreen.cs" />
+    <Compile Include="Source\Screens\Screen.cs" />
+    <Compile Include="Source\Game\Weapon.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
@@ -61,10 +77,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\..\..\..\..\Program Files %28x86%29\MonoGame\v3.0\Assemblies\WindowsGL\SDL.dll">
-      <Link>SDL.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\Fonts\Title.xml" />
     <Content Include="Content\Sprites\asteroid.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -80,7 +92,28 @@
     </Content>
     <Content Include="Icon.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 4.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

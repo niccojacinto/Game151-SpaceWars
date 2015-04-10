@@ -11,15 +11,20 @@ namespace SpaceWars {
     /// </summary>
     public static class Program
     {
+        //A Game1 object that acts a singleton.
+        //It can be accessed by other classes and exposes
+        //the current active screen.
+        public static Game1 game;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            using (var game = new Game1())
+            using (game = new Game1())
                 game.Run();
-        }
-    }
+        }//static void Main()
+    }//public static class Program
 #endif
-}
+}//namespace SpaceWars {

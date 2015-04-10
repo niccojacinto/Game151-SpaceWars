@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace SpaceWars {
-    class Asteroid : GameObject {
+    public class Asteroid : GameObject {
 
         public Vector2 _velocity;
 
