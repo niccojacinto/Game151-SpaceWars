@@ -12,13 +12,17 @@ namespace SpaceWars {
         private Vector2 _velocity;
         private float _speedMultiplier;
 
-        public Weapon (Texture2D texture, Vector2 position, float rotation)
+        public CommandCenter Player { get; set; }
+
+        public Weapon (Texture2D texture, Vector2 position, float rotation, CommandCenter player)
             :base(texture, position, 0.02f, rotation, true, SpriteEffects.None)
         {
             _position = position;
             _rotation = rotation + (float)( 90 * ( Math.PI / 180 ) ); 
                     // Adjustment of the sprite image because the image is oriented in the wrong direction
             _speedMultiplier = 2.0f;
+            Player = player;
+
 
         }
 
@@ -31,14 +35,32 @@ namespace SpaceWars {
         }
 
         public virtual void Update ( GameTime gameTime ) {
+            boxCollider = new Rectangle (
+              (int)_position.X,
+              (int)_position.Y,
+              (int)( _texture.Width * Scale ),
+              (int)( _texture.Height * Scale ) );
+
             float vX = (float)Math.Cos ( _rotation + (float)( 270 * ( Math.PI / 180 ) ) );
             float vY = (float)Math.Sin ( _rotation + (float)( 270 * ( Math.PI / 180 ) ) );
             _velocity = new Vector2 ( vX, vY ) * _speedMultiplier;
             _position += _velocity;
+
+            foreach ( Asteroid collider in GameScreen.asteroids ) {
+                resolveCollision ( collider );
+            }
         }
 
         public virtual void ActivateSpecial () {
             _speedMultiplier = 7.0f;
+        }
+
+        public void resolveCollision (Asteroid collider) {
+            if ( boxCollider.Intersects ( collider.boxCollider ) && collider.isAlive) {
+                Player._currentActive = null;
+                isAlive = false;
+                collider.resolveCollision ( this );
+            }
         }
 
 

@@ -27,13 +27,15 @@ namespace SpaceWars {
             line = new Texture2D ( _Device, 1, 1 );
             line.SetData<Color> (
                 new Color[] { Color.White } );// fill the texture with White
+            Console.WriteLine ( "CC: " + boxCollider );
             
         }
 
         public void Update ( GameTime gameTime ) {
             _rotation += 0.01f;
-            if (_currentActive != null)
+            if (_currentActive != null) {
                 _currentActive.Update ( gameTime );
+            }
         }
 
         void DrawLine ( SpriteBatch sb, Vector2 start ) {
@@ -70,7 +72,7 @@ namespace SpaceWars {
         }
 
         public void Launch () {
-            _currentActive = new Weapon ( texGeminiMissile, _position, _launchAngle );
+            _currentActive = new Weapon ( texGeminiMissile, _position, _launchAngle, this );
         }
 
     }
