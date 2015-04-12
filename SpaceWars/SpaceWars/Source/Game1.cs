@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Audio;
 #endregion
 
 namespace SpaceWars {
@@ -14,6 +15,7 @@ namespace SpaceWars {
         public GraphicsDeviceManager graphics;
         public SpriteBatch spriteBatch;
         Screen activeScreen;
+        SoundEffectInstance bgm;
 
         public Game1 ()
             : base () {
@@ -33,8 +35,12 @@ namespace SpaceWars {
         } //protected override void Initialize () {
 
         protected override void LoadContent () {
+            
             spriteBatch = new SpriteBatch ( GraphicsDevice );
-            activeScreen = new GameScreen();
+            activeScreen = new MainMenuScreen(this);
+            SoundEffect music = Content.Load<SoundEffect> ( "Audio/Music/lonestode" );
+            setBGM ( music );
+
             // TODO: use this.Content to load your game content here
         }//protected override void LoadContent () {
 
@@ -65,5 +71,15 @@ namespace SpaceWars {
             //TODO destroy/garbage collect active screen..?
             activeScreen = screen;
         }//public void setScreen(Screen screen)
+
+        public void setBGM ( SoundEffect music ) {
+            bgm = music.CreateInstance ();
+            bgm.IsLooped = true;
+            bgm.Play ();
+        }
+
+        public void stopBGM () {
+            bgm.Stop ();
+        }
     }
 }

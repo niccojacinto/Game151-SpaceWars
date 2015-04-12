@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,6 +12,12 @@ namespace SpaceWars
 {
     public class GameScreen : Screen
     {
+
+
+        private enum ScreenState {NORMAL, FADE_IN, COUNTDOWN, GAMEOVER}
+        //Dictionary<SoundEffect, string> gameSounds;
+
+        Game1 _main;
         // State (the internal status of the screen)
         bool _active = true;
 
@@ -25,7 +32,7 @@ namespace SpaceWars
         // Settings
         private const uint NUM_ASTEROIDS = 20;
 
-        public GameScreen() : base ()
+        public GameScreen(Game1 main) : base (main)
         {
             background = new GameObject(
                 content.Load<Texture2D>("Sprites/space"),
@@ -34,6 +41,7 @@ namespace SpaceWars
                 0.0f,
                 false,
                 SpriteEffects.None);
+            _main = main;
         }//public Screen ()
 
         public override void Initialize(){
@@ -57,6 +65,8 @@ namespace SpaceWars
             texCommandCenter = content.Load<Texture2D>("Sprites/command_center");
             texGeminiMissile = content.Load<Texture2D>("Sprites/missile");
             texAsteroid = content.Load<Texture2D>("Sprites/asteroid");
+            //sfxLaunch = content.Load<SoundEffect> ( "Audio/launch" );
+
         }//public override void LoadContent()
 
         public override void Update(GameTime gameTime)

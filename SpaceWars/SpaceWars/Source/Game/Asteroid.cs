@@ -31,8 +31,6 @@ namespace SpaceWars {
             _trueRotation = trueRotation;
             _initialVelocity = new Vector2((float)Math.Sin(trueRotation), (float)Math.Cos(trueRotation)) * speed;
             Mass = 1.0f;
-
-
         }
 
         public void Update ( GameTime gameTime, GraphicsDevice Device ) {
