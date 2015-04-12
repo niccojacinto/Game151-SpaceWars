@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -15,6 +16,7 @@ namespace SpaceWars {
         public Weapon _currentActive; // Missile currently launched
         public Weapon _currentWeapon; // Weapon currently selected
         Texture2D texGeminiMissile;
+        SoundEffect launch;
 
         public CommandCenter (GraphicsDevice Device, Texture2D texture, Texture2D weapon, Vector2 position)
             :base(texture, position, 0.1f, 0.0f, true, SpriteEffects.None)
@@ -27,7 +29,7 @@ namespace SpaceWars {
             line = new Texture2D ( _Device, 1, 1 );
             line.SetData<Color> (
                 new Color[] { Color.White } );// fill the texture with White
-            Console.WriteLine ( "CC: " + boxCollider );
+
             
         }
 
