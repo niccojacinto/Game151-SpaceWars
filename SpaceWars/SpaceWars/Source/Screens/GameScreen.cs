@@ -20,10 +20,10 @@ namespace SpaceWars
         // Entities (anything on the screen)
         GameObject background;
         CommandCenter player1, player2;
-        List<Asteroid> asteroids;
+        public static List<Asteroid> asteroids;
 
         // Settings
-        private const uint NUM_ASTEROIDS = 75;
+        private const uint NUM_ASTEROIDS = 20;
 
         public GameScreen() : base ()
         {
@@ -46,10 +46,9 @@ namespace SpaceWars
             {
                 float x = random.Next(50, 1000);
                 float y = random.Next(50, 600);
-                float vX = random.Next(0, 3) - 1;
-                float vY = random.Next(0, 3) - 1;
-                Asteroid tmpAsteroid = new Asteroid(texAsteroid, new Vector2(x, y));
-                tmpAsteroid._velocity = new Vector2(vX * 0.1f, vY * 0.1f);
+                float speed = random.Next(0, 100);
+                float rot = random.Next ( 0, 360 );
+                Asteroid tmpAsteroid = new Asteroid(texAsteroid, new Vector2(x, y), rot, speed);
                 asteroids.Add(tmpAsteroid);
             }
         }//public override void Initialize(){
@@ -64,12 +63,14 @@ namespace SpaceWars
         {}
 
         public override void Update(GameTime gameTime, KeyboardState keyState) {
+            // Player Updates
             player1.Update(gameTime);
             player2.Update(gameTime);
             foreach (Asteroid asteroid in asteroids)
             {
                 asteroid.Update(gameTime, graphics);
             }
+
             UpdateInput(keyState);
         }//public override void Update(GameTime gameTime, KeyboardState keyState) {
 
