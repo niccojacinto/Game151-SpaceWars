@@ -15,6 +15,18 @@ namespace SpaceWars
 
 
         private enum ScreenState {NORMAL, FADE_IN, COUNTDOWN, GAMEOVER}
+        ScreenState currentState;
+        Texture2D blackTex;
+        int blackTexAlpha;
+        float totalElapsed;
+        string currentCount;
+        SpriteFont fontCountdown;
+        float countDownScale;
+        float timer;
+        float timerDelay = 1;
+        SoundEffect sfxCountdown;
+
+
         //Dictionary<SoundEffect, string> gameSounds;
 
         Game1 _main;
@@ -42,6 +54,13 @@ namespace SpaceWars
                 false,
                 SpriteEffects.None);
             _main = main;
+
+            currentState = ScreenState.FADE_IN;
+            blackTexAlpha = 255;
+            currentCount = "3";
+            countDownScale = 10.0f;
+            timer = 3;
+  
         }//public Screen ()
 
         public override void Initialize(){
@@ -65,6 +84,12 @@ namespace SpaceWars
             texCommandCenter = content.Load<Texture2D>("Sprites/command_center");
             texGeminiMissile = content.Load<Texture2D>("Sprites/missile");
             texAsteroid = content.Load<Texture2D>("Sprites/asteroid");
+            blackTex = content.Load<Texture2D> ( "Sprites/black" );
+            fontCountdown = content.Load<SpriteFont> ( "Fonts/Times" );
+            sfxCountdown = content.Load<SoundEffect>("Audio/countdownvoice");
+
+
+            
             //sfxLaunch = content.Load<SoundEffect> ( "Audio/launch" );
 
         }//public override void LoadContent()
@@ -73,15 +98,64 @@ namespace SpaceWars
         {}
 
         public override void Update(GameTime gameTime, KeyboardState keyState) {
-            // Player Updates
-            player1.Update(gameTime);
-            player2.Update(gameTime);
-            foreach (Asteroid asteroid in asteroids)
-            {
-                asteroid.Update(gameTime, graphics);
+            float elapsed = ( (float)gameTime.ElapsedGameTime.Milliseconds ) / 1000.0f;
+            totalElapsed += elapsed;
+
+            switch ( currentState ) {
+                case ScreenState.NORMAL:
+                    // Player Updates
+                    player1.Update ( gameTime );
+                    player2.Update ( gameTime );
+                    foreach ( Asteroid asteroid in asteroids ) {
+                        asteroid.Update ( gameTime, graphics );
+                    }
+                    UpdateInput ( keyState );
+                    break;
+                case ScreenState.COUNTDOWN:
+                    timer -= elapsed;
+                    timerDelay -= elapsed;
+
+                    if ( timer <= -1  ) {
+                        currentState = ScreenState.NORMAL;
+                    }
+                    else if ( timer <= 0  ) {
+                        currentCount = "  Match Start"; // Sweep KING!!!
+                    }
+                    else if ( timer <= 1 ) {
+                        currentCount = "1";
+                    }
+                    else if ( timer <= 2 ) {
+                        currentCount = "2";
+                    }
+                    else if ( timer >= 3 ) {
+                        currentCount = "3";
+                    }
+
+                    if ( timerDelay <= 0 ) {
+                        countDownScale = 10;
+                        timerDelay = 1.0f;
+                    }
+
+                    countDownScale = ( 20 * timerDelay );
+                    if ( countDownScale < 4 )
+                        countDownScale = 4;
+                    
+                    break;
+                case ScreenState.FADE_IN:
+                    blackTexAlpha-= 2;
+                    if ( blackTexAlpha <= 0 ) {
+                        totalElapsed = 0;
+                        currentState = ScreenState.COUNTDOWN;
+                        sfxCountdown.Play ();
+         
+                        
+                    }
+                    break;
+                default:
+                    break;
             }
 
-            UpdateInput(keyState);
+
         }//public override void Update(GameTime gameTime, KeyboardState keyState) {
 
         public override void UpdateInput(KeyboardState keyState)
@@ -124,7 +198,30 @@ namespace SpaceWars
                 {
                     asteroids[i].Draw(spriteBatch);
                 }
+                if ( currentState == ScreenState.FADE_IN )
+                    spriteBatch.Draw ( blackTex,
+                        new Rectangle ( 0, 0, graphics.Viewport.Width, graphics.Viewport.Height ),
+                        new Color ( 0, 0, 0, blackTexAlpha ) );
+
+                // Countdown TODO: Clean Up, separate function maybe
+                Vector2 stringSize = fontCountdown.MeasureString ( currentCount );
+                Vector2 tmpVect = new Vector2 ( (graphics.Viewport.Width - stringSize.X) / 2,
+                                            (graphics.Viewport.Height - stringSize.Y) / 2 );
+
+                if ( currentState == ScreenState.COUNTDOWN ) {
+                    spriteBatch.DrawString ( fontCountdown,
+                        currentCount,
+                        tmpVect,
+                        Color.Red,
+                        0.0f,
+                        new Vector2 (stringSize.X / 2, stringSize.Y / 2),
+                        countDownScale,
+                        SpriteEffects.None,
+                        0 );
+                }
             }// if (_active){
         }//public override void Draw()
+
+
     }//public class GameScreen : Screen
 }//namespace SpaceWars
