@@ -24,7 +24,7 @@ namespace SpaceWars
         float countDownScale;
         float timer;
         float timerDelay = 1;
-        SoundEffect sfxCountdown;
+        SoundEffect sfxCountdown, sfxReady;
 
 
         //Dictionary<SoundEffect, string> gameSounds;
@@ -87,6 +87,7 @@ namespace SpaceWars
             blackTex = content.Load<Texture2D> ( "Sprites/black" );
             fontCountdown = content.Load<SpriteFont> ( "Fonts/Times" );
             sfxCountdown = content.Load<SoundEffect>("Audio/countdownvoice");
+            sfxReady = content.Load<SoundEffect> ( "Audio/areyouready" );
 
 
             
@@ -136,9 +137,9 @@ namespace SpaceWars
                         timerDelay = 1.0f;
                     }
 
-                    countDownScale = ( 20 * timerDelay );
-                    if ( countDownScale < 4 )
-                        countDownScale = 4;
+                    countDownScale = ( 30 * timerDelay );
+                    if ( countDownScale < 10 )
+                        countDownScale = 10;
                     
                     break;
                 case ScreenState.FADE_IN:
@@ -147,8 +148,8 @@ namespace SpaceWars
                         totalElapsed = 0;
                         currentState = ScreenState.COUNTDOWN;
                         sfxCountdown.Play ();
-         
-                        
+                        sfxReady.Play ();
+    
                     }
                     break;
                 default:
