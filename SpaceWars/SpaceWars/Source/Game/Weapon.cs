@@ -49,6 +49,15 @@ namespace SpaceWars {
             foreach ( Asteroid collider in GameScreen.asteroids ) {
                 resolveCollision ( collider );
             }
+
+            // if missile leaves the game screen, it is no longer the active missile, and is no longer drawn
+            if (!Game1.viewportRect.Contains(new Point(
+                        (int)_position.X,
+                        (int)_position.Y)))
+            {
+                isAlive = false;
+                Player._currentActive = null;
+            }
         }
 
         public virtual void ActivateSpecial () {

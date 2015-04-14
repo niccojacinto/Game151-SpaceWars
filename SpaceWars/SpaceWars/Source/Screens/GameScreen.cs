@@ -24,7 +24,9 @@ namespace SpaceWars
         float countDownScale;
         float timer;
         float timerDelay = 1;
+        float spawnTimer;
         SoundEffect sfxCountdown, sfxReady;
+        Random random;
 
 
         //Dictionary<SoundEffect, string> gameSounds;
@@ -42,7 +44,8 @@ namespace SpaceWars
         public static List<Asteroid> asteroids;
 
         // Settings
-        private const uint NUM_ASTEROIDS = 20;
+        private const uint NUM_ASTEROIDS = 5;
+        public static uint currentNumAsteroids;
 
         public GameScreen(Game1 main) : base (main)
         {
@@ -68,16 +71,25 @@ namespace SpaceWars
             player1 = new CommandCenter(graphics, texCommandCenter, texGeminiMissile, new Vector2(100, 100));
             player2 = new CommandCenter(graphics, texCommandCenter, texGeminiMissile, new Vector2(1000, 200));
 
-            Random random = new Random();
+            currentNumAsteroids = 0;
+            spawnTimer = 0.0f;
+
+            random = new Random();
+
             for (int i = 0; i < NUM_ASTEROIDS; i++)
+            {
+                Asteroid tmpAsteroid = new Asteroid(texAsteroid, Vector2.Zero);
+                asteroids.Add(tmpAsteroid);
+            }
+            /*for (int i = 0; i < NUM_ASTEROIDS; i++)
             {
                 float x = random.Next(50, 1000);
                 float y = random.Next(50, 600);
                 float speed = random.Next(0, 100);
-                float rot = random.Next ( 0, 360 );
+                float rot = random.Next(0, 360);
                 Asteroid tmpAsteroid = new Asteroid(texAsteroid, new Vector2(x, y), rot, speed);
                 asteroids.Add(tmpAsteroid);
-            }
+            }*/
         }//public override void Initialize(){
 
         public override void LoadContent(){
@@ -111,6 +123,7 @@ namespace SpaceWars
                         asteroid.Update ( gameTime, graphics );
                     }
                     UpdateInput ( keyState );
+                    SpawnAsteroids(elapsed);
                     break;
                 case ScreenState.COUNTDOWN:
                     timer -= elapsed;
@@ -188,6 +201,33 @@ namespace SpaceWars
             }//else
         }// private void function handlePlayerInput (CommandCenter player, KeyState keyState
 
+        public void SpawnAsteroids(float elapsed)
+        {
+            spawnTimer -= elapsed;
+            if (currentNumAsteroids < NUM_ASTEROIDS)
+            {
+                if (spawnTimer <= 0)
+                {
+
+
+                    Vector2 spawnPoint = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height * 1.25f);
+                    //Vector2 spawnPoint = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height /2);
+                    float speed = random.Next(100, 200);
+                    float rot = -random.Next(150, 210);
+
+                    for (int i = 0; i < NUM_ASTEROIDS; i++)
+                    {
+                        if (!asteroids[i].isAlive)
+                        {
+                            currentNumAsteroids++;
+                            spawnTimer = 0.5f;
+                            asteroids[i].setProperty(spawnPoint, rot, speed);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
 
         public override void Draw()
         {
@@ -195,7 +235,7 @@ namespace SpaceWars
                 background.Draw(spriteBatch);
                 player1.Draw(spriteBatch);
                 player2.Draw(spriteBatch);
-                for (int i = 0; i < NUM_ASTEROIDS; i++)
+                for (int i = 0; i < currentNumAsteroids; i++)
                 {
                     asteroids[i].Draw(spriteBatch);
                 }

@@ -25,12 +25,15 @@ namespace SpaceWars {
         public float _trueRotation; // Where the asteroid is facing, 
                                     // because _rotation is used for sprite rotation already
 
-        public Asteroid ( Texture2D texture, Vector2 position, float trueRotation, float speed )
+        public float radius;
+
+        public Asteroid ( Texture2D texture, Vector2 position)
             : base ( texture, position, 0.1f, 0.0f, true, SpriteEffects.None ) {
-            _position = position;
-            _trueRotation = trueRotation;
-            _initialVelocity = new Vector2((float)Math.Sin(trueRotation), (float)Math.Cos(trueRotation)) * speed;
+            
+            
             Mass = 1.0f;
+            radius = (_texture.Width * Scale) / 2;
+            isAlive = false;
         }
 
         public void Update ( GameTime gameTime, GraphicsDevice Device ) {
@@ -54,18 +57,32 @@ namespace SpaceWars {
             // Rotate sprite along axis
             _rotation += 0.020f;
 
-            if ( _position.X > Device.Viewport.Width ) {
-                _velocity = new Vector2 ( _velocity.X * -1, _velocity.Y);
+            if (Game1.viewportRect.Contains(new Point(
+                        (int)_position.X,
+                        (int)_position.Y)))
+            {
+                isAlive = true;
             }
-            else if ( _position.X < 0 ) {
-                _velocity = new Vector2 ( _velocity.X * -1, _velocity.Y );
-            }
+            // boundary checks
+            if (isAlive)
+            {
+                if (_position.X > Device.Viewport.Width)
+                {
+                    _velocity = new Vector2(_velocity.X * -1, _velocity.Y);
+                }
+                else if (_position.X < 0)
+                {
+                    _velocity = new Vector2(_velocity.X * -1, _velocity.Y);
+                }
 
-            if ( _position.Y > Device.Viewport.Height ) {
-                _velocity = new Vector2 ( _velocity.X, _velocity.Y * -1 );
-            }
-            else if ( _position.Y < 0 ) {
-                _velocity = new Vector2 ( _velocity.X, _velocity.Y * -1 );
+                if (_position.Y > Device.Viewport.Height)
+                {
+                    _velocity = new Vector2(_velocity.X, _velocity.Y * -1);
+                }
+                else if (_position.Y < 0)
+                {
+                    _velocity = new Vector2(_velocity.X, _velocity.Y * -1);
+                }
             }
             
 
@@ -78,16 +95,38 @@ namespace SpaceWars {
 
         }
 
+        public void setProperty(Vector2 pos, float rot, float speed)
+        {
+            _position = pos;
+            _trueRotation = rot;
+            _trueRotation = rot * ((float)Math.PI / 180);
+            _initialVelocity = new Vector2((float)Math.Sin(_trueRotation), (float)Math.Cos(_trueRotation)) * speed;
+            isAlive = true;
+        }
         public void resolveCollision (Asteroid collider) {
 
-            if ( collider == this)
+            if ( collider == this || !collider.isAlive)
                 return;
 
+            float distance = (_position - collider._position).Length();
+
+            if (!(distance < radius + collider.radius))
+                return;
+
+            // determine normal between pokeBall and cannonball
+            Vector2 unitNormal = _position - collider._position;
+            unitNormal.Normalize(); // normalize normal
+            // determine the initial velocity in direction of the normal
+            Vector2 velocityNormal = Vector2.Dot(_initialVelocity, unitNormal ) * unitNormal;
+
+            _velocity = _initialVelocity - (2 * velocityNormal);
+
+            /*
             float r1 = _origin.X * Scale; // Using this for now because there is no radius variable, will see if it is needed
             float r2 = collider.Origin.X * collider.Scale;
             Vector2 a1 = _position + new Vector2 ( r1, r1 );
             Vector2 a2 = collider.Position + new Vector2 ( r2, r2 );
-
+             
             if ( Vector2.Distance ( a1, a2 ) >= r1 + r2 )
                 return;
 
@@ -98,11 +137,13 @@ namespace SpaceWars {
             Vector2 velocityNormal = Vector2.Dot (_initialVelocity, unitNormal ) * unitNormal;
             // Set velocity
             _velocity = _initialVelocity - 2 * velocityNormal;
+             */
 
         }
 
         public void resolveCollision ( Weapon collider ) {
             isAlive = false;
+            GameScreen.currentNumAsteroids--;
         }
     }
 }
