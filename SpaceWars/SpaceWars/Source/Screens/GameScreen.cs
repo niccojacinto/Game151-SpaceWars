@@ -42,10 +42,11 @@ namespace SpaceWars
         GameObject background;
         CommandCenter player1, player2;
         public static List<Asteroid> asteroids;
+        public static Queue<Asteroid> deadAsteroids;
 
         // Settings
         private const uint NUM_ASTEROIDS = 100;
-        public static uint currentNumAsteroids;
+        public static int currentNumAsteroids;
 
         public GameScreen(Game1 main) : base (main)
         {
@@ -68,6 +69,7 @@ namespace SpaceWars
 
         public override void Initialize(){
             asteroids = new List<Asteroid>();
+            deadAsteroids = new Queue<Asteroid> ();
             player1 = new CommandCenter(graphics, texCommandCenter, texGeminiMissile, new Vector2(100, 100));
             player2 = new CommandCenter(graphics, texCommandCenter, texGeminiMissile, new Vector2(1000, 200));
 
@@ -80,6 +82,7 @@ namespace SpaceWars
             {
                 Asteroid tmpAsteroid = new Asteroid(texAsteroid, Vector2.Zero);
                 asteroids.Add(tmpAsteroid);
+                deadAsteroids.Enqueue ( tmpAsteroid );
             }
             /*for (int i = 0; i < NUM_ASTEROIDS; i++)
             {
@@ -209,21 +212,16 @@ namespace SpaceWars
             {
                 if (spawnTimer <= 0)
                 {
-                    Vector2 spawnPoint = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height * 1.25f);
-                    //Vector2 spawnPoint = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height);
+                    Vector2 spawnPoint = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height);
                     float speed = random.Next(100, 200);
                     float rot = -random.Next(150, 210);
 
-                    for (int i = 0; i < NUM_ASTEROIDS; i++)
-                    {
-                        if (!asteroids[i].isAlive)
-                        {
-                            currentNumAsteroids++;
-                            spawnTimer = 0.5f;
-                            asteroids[i].setProperty(spawnPoint, rot, speed);
-                            break;
-                        }
-                    }
+                    Asteroid tmpAsteroid = deadAsteroids.Dequeue ();
+                    tmpAsteroid.setProperty(spawnPoint, rot, speed);
+                    currentNumAsteroids++;
+                    spawnTimer = 0.5f;
+                   
+
                 }
             }
         }
@@ -234,7 +232,7 @@ namespace SpaceWars
                 background.Draw(spriteBatch);
                 player1.Draw(spriteBatch);
                 player2.Draw(spriteBatch);
-                for (int i = 0; i < currentNumAsteroids; i++)
+                for (int i = 0; i < NUM_ASTEROIDS; i++)
                 {
                     asteroids[i].Draw(spriteBatch);
                 }

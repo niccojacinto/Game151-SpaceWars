@@ -56,12 +56,6 @@ namespace SpaceWars {
             // Rotate sprite along axis
             _rotation += 0.020f;
 
-            if (Game1.viewportRect.Contains(new Point(
-                        (int)_position.X,
-                        (int)_position.Y)))
-            {
-                isAlive = true;
-            }
             // boundary checks
             if (isAlive)
             {
@@ -100,6 +94,7 @@ namespace SpaceWars {
             _trueRotation = rot;
             _trueRotation = rot * ((float)Math.PI / 180);
             _initialVelocity = new Vector2((float)Math.Sin(_trueRotation), (float)Math.Cos(_trueRotation)) * speed;
+            isAlive = true;
         }
         public void resolveCollision (Asteroid collider) {
 
@@ -119,27 +114,11 @@ namespace SpaceWars {
 
             _velocity = _initialVelocity - (2 * velocityNormal);
 
-            /*
-            float r1 = _origin.X * Scale; // Using this for now because there is no radius variable, will see if it is needed
-            float r2 = collider.Origin.X * collider.Scale;
-            Vector2 a1 = _position + new Vector2 ( r1, r1 );
-            Vector2 a2 = collider.Position + new Vector2 ( r2, r2 );
-             
-            if ( Vector2.Distance ( a1, a2 ) >= r1 + r2 )
-                return;
-
-            // Find Normal
-            Vector2 unitNormal = a2 - a1;
-            unitNormal.Normalize ();
-            // Find projection
-            Vector2 velocityNormal = Vector2.Dot (_initialVelocity, unitNormal ) * unitNormal;
-            // Set velocity
-            _velocity = _initialVelocity - 2 * velocityNormal;
-             */
 
         }
 
         public void resolveCollision ( Weapon collider ) {
+            GameScreen.deadAsteroids.Enqueue ( this );
             isAlive = false;
             GameScreen.currentNumAsteroids--;
         }
