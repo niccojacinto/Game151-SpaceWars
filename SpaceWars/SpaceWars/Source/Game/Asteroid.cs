@@ -30,7 +30,6 @@ namespace SpaceWars {
         public Asteroid ( Texture2D texture, Vector2 position)
             : base ( texture, position, 0.1f, 0.0f, true, SpriteEffects.None ) {
             
-            
             Mass = 1.0f;
             radius = (_texture.Width * Scale) / 2;
             isAlive = false;
@@ -101,7 +100,6 @@ namespace SpaceWars {
             _trueRotation = rot;
             _trueRotation = rot * ((float)Math.PI / 180);
             _initialVelocity = new Vector2((float)Math.Sin(_trueRotation), (float)Math.Cos(_trueRotation)) * speed;
-            isAlive = true;
         }
         public void resolveCollision (Asteroid collider) {
 

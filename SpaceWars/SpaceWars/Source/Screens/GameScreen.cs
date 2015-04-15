@@ -44,7 +44,7 @@ namespace SpaceWars
         public static List<Asteroid> asteroids;
 
         // Settings
-        private const uint NUM_ASTEROIDS = 5;
+        private const uint NUM_ASTEROIDS = 100;
         public static uint currentNumAsteroids;
 
         public GameScreen(Game1 main) : base (main)
@@ -119,11 +119,12 @@ namespace SpaceWars
                     // Player Updates
                     player1.Update ( gameTime );
                     player2.Update ( gameTime );
+                    SpawnAsteroids(elapsed);
                     foreach ( Asteroid asteroid in asteroids ) {
                         asteroid.Update ( gameTime, graphics );
                     }
                     UpdateInput ( keyState );
-                    SpawnAsteroids(elapsed);
+                    
                     break;
                 case ScreenState.COUNTDOWN:
                     timer -= elapsed;
@@ -208,10 +209,8 @@ namespace SpaceWars
             {
                 if (spawnTimer <= 0)
                 {
-
-
                     Vector2 spawnPoint = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height * 1.25f);
-                    //Vector2 spawnPoint = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height /2);
+                    //Vector2 spawnPoint = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height);
                     float speed = random.Next(100, 200);
                     float rot = -random.Next(150, 210);
 

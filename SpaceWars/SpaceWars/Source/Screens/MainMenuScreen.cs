@@ -35,7 +35,7 @@ namespace SpaceWars {
                 SpriteEffects.FlipHorizontally );
             _main = main;
             blackTexAlpha = 255;
-            currentState = ScreenState.FADE_OUT;
+            currentState = ScreenState.FADE_IN;
             frequency = 2;
         }
 
