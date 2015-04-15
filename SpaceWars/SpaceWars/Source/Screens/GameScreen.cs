@@ -212,8 +212,8 @@ namespace SpaceWars
             {
                 if (spawnTimer <= 0)
                 {
-                    Vector2 spawnPoint = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height);
-                    float speed = random.Next(100, 200);
+                    Vector2 spawnPoint = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height + 50);
+                    float speed = random.Next(100, 100);
                     float rot = -random.Next(150, 210);
 
                     Asteroid tmpAsteroid = deadAsteroids.Dequeue ();
@@ -238,7 +238,7 @@ namespace SpaceWars
                 }
                 if ( currentState == ScreenState.FADE_IN )
                     spriteBatch.Draw ( blackTex,
-                        new Rectangle ( 0, 0, graphics.Viewport.Width, graphics.Viewport.Height ),
+                        new Rectangle ( 0, 0, graphics.Viewport.Width, graphics.Viewport.Height),
                         new Color ( 0, 0, 0, blackTexAlpha ) );
 
                 // Countdown TODO: Clean Up, separate function maybe

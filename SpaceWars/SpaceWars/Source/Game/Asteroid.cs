@@ -57,24 +57,22 @@ namespace SpaceWars {
             _rotation += 0.020f;
 
             // boundary checks
-            if (isAlive)
-            {
-                if (_position.X > Device.Viewport.Width)
-                {
-                    _velocity = new Vector2(_velocity.X * -1, _velocity.Y);
+            if ( Game1.viewportRect.Contains(_position) ) {
+                if ( _position.X + Origin.X * Scale > Device.Viewport.Width ) {
+                    _velocity = new Vector2 ( _velocity.X * -1, _velocity.Y );
                 }
-                else if (_position.X < 0)
-                {
-                    _velocity = new Vector2(_velocity.X * -1, _velocity.Y);
+                else if ( _position.X - Origin.X * Scale < 0 ) {
+                    _velocity = new Vector2 ( _velocity.X * -1, _velocity.Y );
                 }
 
-                if (_position.Y > Device.Viewport.Height)
-                {
-                    _velocity = new Vector2(_velocity.X, _velocity.Y * -1);
+                if ( _position.Y + Origin.Y * Scale > Device.Viewport.Height ) {
+                    // Only bounce it back if velocity is not toward screenspace
+                    if ( _velocity.Y >= 0 )
+                        _velocity = new Vector2 ( _velocity.X, _velocity.Y * -1 );
                 }
-                else if (_position.Y < 0)
-                {
-                    _velocity = new Vector2(_velocity.X, _velocity.Y * -1);
+                else if ( _position.Y - Origin.Y * Scale  < 0 ) {
+
+                    _velocity = new Vector2 ( _velocity.X, _velocity.Y * -1 );
                 }
             }
             
@@ -101,10 +99,12 @@ namespace SpaceWars {
             if ( collider == this || !collider.isAlive)
                 return;
 
+
             float distance = (_position - collider._position).Length();
 
-            if (!(distance < radius + collider.radius))
+            if ( !( distance < radius + collider.radius ) ) 
                 return;
+            
 
             // determine normal between pokeBall and cannonball
             Vector2 unitNormal = _position - collider._position;
