@@ -15,6 +15,7 @@ namespace SpaceWars {
         private float _launchAngle;
         public Weapon _currentActive; // Missile currently launched
         public Weapon _currentWeapon; // Weapon currently selected
+        private int hp;
         Texture2D texGeminiMissile;
         SoundEffect launch;
 
@@ -25,15 +26,20 @@ namespace SpaceWars {
             _launchAngle = 0.0f;
             _Device = Device;
             texGeminiMissile = weapon;
+            hp = 100;
 
             line = new Texture2D ( _Device, 1, 1 );
             line.SetData<Color> (
                 new Color[] { Color.White } );// fill the texture with White
 
-            
         }
 
         public void Update ( GameTime gameTime ) {
+            boxCollider = new Rectangle (
+              (int)_position.X,
+              (int)_position.Y,
+              (int)( _texture.Width * Scale ),
+              (int)( _texture.Height * Scale ) );
             _rotation += 0.01f;
             if (_currentActive != null) {
                 _currentActive.Update ( gameTime );
@@ -57,11 +63,26 @@ namespace SpaceWars {
 
         }
 
+
         public override void Draw (SpriteBatch spriteBatch) {
             base.Draw (spriteBatch);
             if (_currentActive != null)
                 _currentActive.Draw ( spriteBatch );
             DrawLine ( spriteBatch,  _position );
+
+            Color color = Color.GreenYellow;
+            if ( hp < 20 ) 
+                color = Color.Red;
+            else if (hp < 60) 
+                color = Color.Gold;
+
+            string sHP = hp + "%";
+            Vector2 stringSize = GameScreen.fontUI.MeasureString(sHP);
+            spriteBatch.DrawString ( GameScreen.fontUI, 
+                sHP,
+                new Vector2 ( ( _position.X - stringSize.X / 3 ), ( _position.Y - stringSize.Y - 20) ),
+                color);
+
         }
 
 
@@ -75,6 +96,10 @@ namespace SpaceWars {
 
         public void Launch () {
             _currentActive = new Weapon ( texGeminiMissile, _position, _launchAngle, this );
+        }
+
+        public void Hit () {
+            hp -= 7;
         }
 
     }

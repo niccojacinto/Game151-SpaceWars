@@ -13,7 +13,6 @@ namespace SpaceWars
     public class GameScreen : Screen
     {
 
-
         private enum ScreenState {NORMAL, FADE_IN, COUNTDOWN, GAMEOVER}
         ScreenState currentState;
         Texture2D blackTex;
@@ -21,13 +20,13 @@ namespace SpaceWars
         float totalElapsed;
         string currentCount;
         SpriteFont fontCountdown;
+        public static SpriteFont fontUI;
         float countDownScale;
         float timer;
         float timerDelay = 1;
         float spawnTimer;
         SoundEffect sfxCountdown, sfxReady;
         Random random;
-
 
         //Dictionary<SoundEffect, string> gameSounds;
 
@@ -40,12 +39,12 @@ namespace SpaceWars
 
         // Entities (anything on the screen)
         GameObject background;
-        CommandCenter player1, player2;
+        public static CommandCenter player1, player2;
         public static List<Asteroid> asteroids;
         public static Queue<Asteroid> deadAsteroids;
 
         // Settings
-        private const uint NUM_ASTEROIDS = 100;
+        private const uint NUM_ASTEROIDS = 50;
         public static int currentNumAsteroids;
 
         public GameScreen(Game1 main) : base (main)
@@ -101,6 +100,7 @@ namespace SpaceWars
             texAsteroid = content.Load<Texture2D>("Sprites/asteroid");
             blackTex = content.Load<Texture2D> ( "Sprites/black" );
             fontCountdown = content.Load<SpriteFont> ( "Fonts/Times" );
+            fontUI = content.Load<SpriteFont> ( "Fonts/agencyFBUI" );
             sfxCountdown = content.Load<SoundEffect>("Audio/countdownvoice");
             sfxReady = content.Load<SoundEffect> ( "Audio/areyouready" );
 
