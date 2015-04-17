@@ -126,6 +126,7 @@ namespace SpaceWars
                     foreach ( Asteroid asteroid in asteroids ) {
                         asteroid.Update ( gameTime, graphics );
                     }
+
                     UpdateInput ( keyState );
                     
                     break;
@@ -215,13 +216,15 @@ namespace SpaceWars
                     Vector2 spawnPoint = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height + 50);
                     float speed = random.Next(100, 100);
                     float rot = -random.Next(150, 210);
+                    float mass = random.Next(1, 5);
 
                     Asteroid tmpAsteroid = deadAsteroids.Dequeue ();
                     tmpAsteroid.setProperty(spawnPoint, rot, speed);
+                    tmpAsteroid.Mass = mass;
                     currentNumAsteroids++;
                     spawnTimer = 0.5f;
                    
-
+                    // asteroids get clumped off screen still if killed too quickly, timer was supposed to fix this?
                 }
             }
         }

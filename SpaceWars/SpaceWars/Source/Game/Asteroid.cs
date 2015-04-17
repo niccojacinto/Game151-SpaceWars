@@ -24,12 +24,11 @@ namespace SpaceWars {
         public float Mass { get; set; }
         public float _trueRotation; // Where the asteroid is facing, 
                                     // because _rotation is used for sprite rotation already
-
         public float radius;
 
         public Asteroid ( Texture2D texture, Vector2 position)
             : base ( texture, position, 0.1f, 0.0f, true, SpriteEffects.None ) {
-            
+
             Mass = 1.0f;
             radius = (_texture.Width * Scale) / 2;
             isAlive = false;
@@ -59,10 +58,14 @@ namespace SpaceWars {
             // boundary checks
             if ( Game1.viewportRect.Contains(_position) ) {
                 if ( _position.X + Origin.X * Scale > Device.Viewport.Width ) {
-                    _velocity = new Vector2 ( _velocity.X * -1, _velocity.Y );
+                    // Only bounce it back if velocity is not toward screenspace
+                    if (_velocity.X >= 0)
+                        _velocity = new Vector2 ( _velocity.X * -1, _velocity.Y );
                 }
                 else if ( _position.X - Origin.X * Scale < 0 ) {
-                    _velocity = new Vector2 ( _velocity.X * -1, _velocity.Y );
+                    // Only bounce it back if velocity is not toward screenspace
+                    if (_velocity.X < 0)
+                        _velocity = new Vector2 ( _velocity.X * -1, _velocity.Y );
                 }
 
                 if ( _position.Y + Origin.Y * Scale > Device.Viewport.Height ) {
@@ -71,8 +74,9 @@ namespace SpaceWars {
                         _velocity = new Vector2 ( _velocity.X, _velocity.Y * -1 );
                 }
                 else if ( _position.Y - Origin.Y * Scale  < 0 ) {
-
-                    _velocity = new Vector2 ( _velocity.X, _velocity.Y * -1 );
+                    // Only bounce it back if velocity is not toward screenspace
+                    if (_velocity.Y < 0)
+                        _velocity = new Vector2 ( _velocity.X, _velocity.Y * -1 );
                 }
             }
             
@@ -99,21 +103,24 @@ namespace SpaceWars {
             if ( collider == this || !collider.isAlive)
                 return;
 
-
             float distance = (_position - collider._position).Length();
 
             if ( !( distance < radius + collider.radius ) ) 
                 return;
-            
 
-            // determine normal between pokeBall and cannonball
+            // asteroids are being forced into other asteroids' radii, causing the normal vector to continue being calculated
+            // at different angles, causing an orbiting effect
+            // TODO: fix this ^
+
+            // determine normal
             Vector2 unitNormal = _position - collider._position;
             unitNormal.Normalize(); // normalize normal
+            // ensure asteroids do not stick together or orbit eachother
+            _position = collider._position + ((radius + collider.radius) * unitNormal);
             // determine the initial velocity in direction of the normal
             Vector2 velocityNormal = Vector2.Dot(_initialVelocity, unitNormal ) * unitNormal;
 
             _velocity = _initialVelocity - (2 * velocityNormal);
-
 
         }
 

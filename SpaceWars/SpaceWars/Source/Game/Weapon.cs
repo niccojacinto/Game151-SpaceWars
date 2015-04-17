@@ -11,12 +11,14 @@ namespace SpaceWars {
 
         private Vector2 _velocity;
         private float _speedMultiplier;
+        float specialTimer;
 
         public CommandCenter Player { get; set; }
 
         public Weapon (Texture2D texture, Vector2 position, float rotation, CommandCenter player)
             :base(texture, position, 0.02f, rotation, true, SpriteEffects.None)
         {
+            specialTimer = 0.25f;
             _position = position;
             _rotation = rotation + (float)( 90 * ( Math.PI / 180 ) ); 
                     // Adjustment of the sprite image because the image is oriented in the wrong direction
@@ -41,6 +43,9 @@ namespace SpaceWars {
               (int)( _texture.Width * Scale ),
               (int)( _texture.Height * Scale ) );
 
+            float elapsed = ((float)gameTime.ElapsedGameTime.Milliseconds) / 1000.0f;
+            specialTimer -= elapsed;
+
             float vX = (float)Math.Cos ( _rotation + (float)( 270 * ( Math.PI / 180 ) ) );
             float vY = (float)Math.Sin ( _rotation + (float)( 270 * ( Math.PI / 180 ) ) );
             _velocity = new Vector2 ( vX, vY ) * _speedMultiplier;
@@ -63,7 +68,9 @@ namespace SpaceWars {
         }
 
         public virtual void ActivateSpecial () {
-            _speedMultiplier = 7.0f;
+            if (specialTimer < 0) {
+                _speedMultiplier = 7.0f;
+            }
         }
 
         public void resolveCollision (Asteroid collider) {
