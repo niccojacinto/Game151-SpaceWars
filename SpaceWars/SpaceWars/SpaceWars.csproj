@@ -50,6 +50,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\Game\AhhSteroid.cs" />
     <Compile Include="Source\Game\Asteroid.cs" />
     <Compile Include="Source\Game\CommandCenter.cs" />
     <Compile Include="Source\Game1.cs" />
@@ -121,7 +122,16 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\Audio\areyouready.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Audio\countdownvoice.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Audio\launch.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Audio\Music\cloakanddagger.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\Audio\Music\lonestode.xnb">

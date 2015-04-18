@@ -10,8 +10,10 @@ namespace SpaceWars {
 
         protected Texture2D _texture;
         protected Vector2 _position;
-        public Vector2 Position { 
-           get { return _position; } 
+        public Vector2 Position
+        {
+            get;
+            set;
         }
         public float Scale;
         protected float _rotation;

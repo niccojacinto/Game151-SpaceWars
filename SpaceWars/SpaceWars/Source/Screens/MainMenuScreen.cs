@@ -16,7 +16,8 @@ namespace SpaceWars {
         Game1 _main;
         SpriteFont title, enter;
         float totalElapsed;
-        SoundEffect start;
+        float frequency; //text flicker
+        SoundEffect start, gameBgm;
 
 
         private enum ScreenState {NORMAL, FADE_IN, FADE_OUT}
@@ -35,6 +36,7 @@ namespace SpaceWars {
             _main = main;
             blackTexAlpha = 255;
             currentState = ScreenState.FADE_IN;
+            frequency = 2;
         }
 
         public override void Initialize () {
@@ -46,6 +48,7 @@ namespace SpaceWars {
             enter = content.Load<SpriteFont> ( "Fonts/radioSpaceFont" );
             start = content.Load<SoundEffect> ( "Audio/start" );
             blackTex = content.Load<Texture2D> ( "Sprites/black" );
+            gameBgm = content.Load<SoundEffect> ( "Audio/Music/cloakanddagger" );
         }
 
         public override void Update ( GameTime gameTime ) {
@@ -81,8 +84,10 @@ namespace SpaceWars {
 
         public override void UpdateInput ( KeyboardState keyState ) {
             if ( keyState.IsKeyDown ( Keys.Enter ) ) {
+                frequency = 10;
                 _main.stopBGM ();
-                start.Play ();
+                //start.Play ();
+                _main.setBGM ( gameBgm );
                 currentState = ScreenState.FADE_OUT;
             }
         }
@@ -111,7 +116,7 @@ namespace SpaceWars {
             stringSize = enter.MeasureString ( output );
             tmpVect = new Vector2 ( graphics.Viewport.Width / 2 - stringSize.X / 2,
                                             graphics.Viewport.Height / 2 + stringSize.Y / 2 );
-            color = (int)( 189 + 63 * Math.Sin ( 2 * Math.PI * 2 * totalElapsed ) );
+            color = (int)( 189 + 63 * Math.Sin ( 2 * Math.PI * frequency * totalElapsed ) );
             spriteBatch.DrawString ( enter, output, tmpVect, new Color ( color, color, color ) );
         }
 

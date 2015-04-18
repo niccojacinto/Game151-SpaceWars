@@ -16,6 +16,7 @@ namespace SpaceWars {
         public SpriteBatch spriteBatch;
         Screen activeScreen;
         SoundEffectInstance bgm;
+        public static Rectangle viewportRect;
 
         public Game1 ()
             : base () {
@@ -28,6 +29,12 @@ namespace SpaceWars {
 
         protected override void Initialize () {
             // TODO: Add your initialization logic here
+
+            //drawable area of the game screen.
+            viewportRect = new Rectangle(0, 0,
+                graphics.GraphicsDevice.Viewport.Width,
+                graphics.GraphicsDevice.Viewport.Height);
+
             base.Initialize ();
             #if DEBUG
                 System.Console.WriteLine("Testing debug statement");
