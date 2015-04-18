@@ -13,26 +13,28 @@ namespace SpaceWars
     public class GameScreen : Screen
     {
 
-        private enum ScreenState {NORMAL, FADE_IN, COUNTDOWN, GAMEOVER}
-        ScreenState currentState;
-        Texture2D blackTex;
-        int blackTexAlpha;
-        float totalElapsed;
-        string currentCount;
-        SpriteFont fontCountdown;
-        public static SpriteFont fontUI;
-        float countDownScale;
-        float timer;
-        float timerDelay = 1;
-        float spawnTimer;
-        SoundEffect sfxCountdown, sfxReady;
-        Random random;
+        // TODO: Share all ScreenStates in one class
+        private enum ScreenState { NORMAL, FADE_IN, COUNTDOWN, GAMEOVER }
+        private ScreenState currentState;
 
-        //Dictionary<SoundEffect, string> gameSounds;
+        public static SpriteFont fontUI;
+
+        private Texture2D blackTex;
+        private int blackTexAlpha;
+        private float totalElapsed;
+        private string currentCount;
+        private SpriteFont fontCountdown;
+
+        private float countDownScale;
+        private float timer;
+        private float timerDelay = 1;
+        private float spawnTimer;
+        private SoundEffect sfxCountdown, sfxReady;
+        private Random random;
+
+        private Dictionary<string, SoundEffect> gameSFXs;
 
         Game1 _main;
-        // State (the internal status of the screen)
-        bool _active = true;
 
         // Data (assets needed for certain tasks)
         Texture2D texCommandCenter, texGeminiMissile, texAsteroid;
@@ -44,7 +46,7 @@ namespace SpaceWars
         public static Queue<Asteroid> deadAsteroids;
 
         // Settings
-        private const uint NUM_ASTEROIDS = 50;
+        private const uint NUM_ASTEROIDS = 25;
         public static int currentNumAsteroids;
 
         public GameScreen(Game1 main) : base (main)
@@ -69,8 +71,8 @@ namespace SpaceWars
         public override void Initialize(){
             asteroids = new List<Asteroid>();
             deadAsteroids = new Queue<Asteroid> ();
-            player1 = new CommandCenter(graphics, texCommandCenter, texGeminiMissile, new Vector2(100, 100));
-            player2 = new CommandCenter(graphics, texCommandCenter, texGeminiMissile, new Vector2(1000, 200));
+            player1 = new CommandCenter(this, texCommandCenter, texGeminiMissile, new Vector2(100, 100));
+            player2 = new CommandCenter(this, texCommandCenter, texGeminiMissile, new Vector2(1000, 200));
 
             currentNumAsteroids = 0;
             spawnTimer = 0.0f;
@@ -83,30 +85,27 @@ namespace SpaceWars
                 asteroids.Add(tmpAsteroid);
                 deadAsteroids.Enqueue ( tmpAsteroid );
             }
-            /*for (int i = 0; i < NUM_ASTEROIDS; i++)
-            {
-                float x = random.Next(50, 1000);
-                float y = random.Next(50, 600);
-                float speed = random.Next(0, 100);
-                float rot = random.Next(0, 360);
-                Asteroid tmpAsteroid = new Asteroid(texAsteroid, new Vector2(x, y), rot, speed);
-                asteroids.Add(tmpAsteroid);
-            }*/
+
         }//public override void Initialize(){
 
         public override void LoadContent(){
+            // Textures
             texCommandCenter = content.Load<Texture2D>("Sprites/command_center");
             texGeminiMissile = content.Load<Texture2D>("Sprites/missile");
             texAsteroid = content.Load<Texture2D>("Sprites/asteroid");
             blackTex = content.Load<Texture2D> ( "Sprites/black" );
+
+            // Fonts
             fontCountdown = content.Load<SpriteFont> ( "Fonts/Times" );
             fontUI = content.Load<SpriteFont> ( "Fonts/agencyFBUI" );
+            // Sound Effects
             sfxCountdown = content.Load<SoundEffect>("Audio/countdownvoice");
-            sfxReady = content.Load<SoundEffect> ( "Audio/areyouready" );
+            //sfxReady = content.Load<SoundEffect> ( "Audio/areyouready" );
 
-
-            
-            //sfxLaunch = content.Load<SoundEffect> ( "Audio/launch" );
+            // Initialize gameSFXs dictionary
+            gameSFXs = new Dictionary<string, SoundEffect> ();
+            gameSFXs.Add ( "launch", content.Load<SoundEffect> ( "Audio/launch" ) );
+            gameSFXs.Add ( "explode", content.Load<SoundEffect> ( "Audio/explosion" ) );
 
         }//public override void LoadContent()
 
@@ -119,10 +118,14 @@ namespace SpaceWars
 
             switch ( currentState ) {
                 case ScreenState.NORMAL:
+                    // TODO: Make a list for all GameObjects
+                    //       and do all collision checks there
+
                     // Player Updates
                     player1.Update ( gameTime );
                     player2.Update ( gameTime );
                     SpawnAsteroids(elapsed);
+                    // Asteroid Updates
                     foreach ( Asteroid asteroid in asteroids ) {
                         asteroid.Update ( gameTime, graphics );
                     }
@@ -154,11 +157,9 @@ namespace SpaceWars
                         countDownScale = 10;
                         timerDelay = 1.0f;
                     }
-
                     countDownScale = ( 30 * timerDelay );
                     if ( countDownScale < 10 )
                         countDownScale = 10;
-                    
                     break;
                 case ScreenState.FADE_IN:
                     blackTexAlpha-= 2;
@@ -166,8 +167,7 @@ namespace SpaceWars
                         totalElapsed = 0;
                         currentState = ScreenState.COUNTDOWN;
                         sfxCountdown.Play ();
-                        sfxReady.Play ();
-    
+                        //sfxReady.Play ();
                     }
                     break;
                 default:
@@ -224,43 +224,44 @@ namespace SpaceWars
                     currentNumAsteroids++;
                     spawnTimer = 0.5f;
                    
-                    // asteroids get clumped off screen still if killed too quickly, timer was supposed to fix this?
                 }
             }
         }
 
+        public void playSFX ( string sfxName ) {
+            gameSFXs[sfxName].Play ();
+        }
+
         public override void Draw()
         {
-            if (_active){
-                background.Draw(spriteBatch);
-                player1.Draw(spriteBatch);
-                player2.Draw(spriteBatch);
-                for (int i = 0; i < NUM_ASTEROIDS; i++)
-                {
-                    asteroids[i].Draw(spriteBatch);
-                }
-                if ( currentState == ScreenState.FADE_IN )
-                    spriteBatch.Draw ( blackTex,
-                        new Rectangle ( 0, 0, graphics.Viewport.Width, graphics.Viewport.Height),
-                        new Color ( 0, 0, 0, blackTexAlpha ) );
+            background.Draw(spriteBatch);
+            player1.Draw(spriteBatch);
+            player2.Draw(spriteBatch);
+            for (int i = 0; i < NUM_ASTEROIDS; i++)
+            {
+                asteroids[i].Draw(spriteBatch);
+            }
+            if ( currentState == ScreenState.FADE_IN )
+                spriteBatch.Draw ( blackTex,
+                    new Rectangle ( 0, 0, graphics.Viewport.Width, graphics.Viewport.Height),
+                    new Color ( 0, 0, 0, blackTexAlpha ) );
 
-                // Countdown TODO: Clean Up, separate function maybe
-                Vector2 stringSize = fontCountdown.MeasureString ( currentCount );
-                Vector2 tmpVect = new Vector2 ( (graphics.Viewport.Width - stringSize.X) / 2,
-                                            (graphics.Viewport.Height - stringSize.Y) / 2 );
+            // Countdown TODO: Clean Up, separate function maybe
+            Vector2 stringSize = fontCountdown.MeasureString ( currentCount );
+            Vector2 tmpVect = new Vector2 ( (graphics.Viewport.Width - stringSize.X) / 2,
+                                        (graphics.Viewport.Height - stringSize.Y) / 2 );
 
-                if ( currentState == ScreenState.COUNTDOWN ) {
-                    spriteBatch.DrawString ( fontCountdown,
-                        currentCount,
-                        tmpVect,
-                        Color.Red,
-                        0.0f,
-                        new Vector2 (stringSize.X / 2, stringSize.Y / 2),
-                        countDownScale,
-                        SpriteEffects.None,
-                        0 );
-                }
-            }// if (_active){
+            if ( currentState == ScreenState.COUNTDOWN ) {
+                spriteBatch.DrawString ( fontCountdown,
+                    currentCount,
+                    tmpVect,
+                    Color.Red,
+                    0.0f,
+                    new Vector2 (stringSize.X / 2, stringSize.Y / 2),
+                    countDownScale,
+                    SpriteEffects.None,
+                    0 );
+            }
         }//public override void Draw()
 
 

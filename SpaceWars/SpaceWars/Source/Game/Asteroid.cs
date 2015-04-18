@@ -63,18 +63,15 @@ namespace SpaceWars {
                         _velocity = new Vector2 ( _velocity.X * -1, _velocity.Y );
                 }
                 else if ( _position.X - Origin.X * Scale < 0 ) {
-                    // Only bounce it back if velocity is not toward screenspace
                     if (_velocity.X < 0)
                         _velocity = new Vector2 ( _velocity.X * -1, _velocity.Y );
                 }
 
                 if ( _position.Y + Origin.Y * Scale > Device.Viewport.Height ) {
-                    // Only bounce it back if velocity is not toward screenspace
                     if ( _velocity.Y >= 0 )
                         _velocity = new Vector2 ( _velocity.X, _velocity.Y * -1 );
                 }
                 else if ( _position.Y - Origin.Y * Scale  < 0 ) {
-                    // Only bounce it back if velocity is not toward screenspace
                     if (_velocity.Y < 0)
                         _velocity = new Vector2 ( _velocity.X, _velocity.Y * -1 );
                 }
@@ -108,10 +105,6 @@ namespace SpaceWars {
             if ( !( distance < radius + collider.radius ) ) 
                 return;
 
-            // asteroids are being forced into other asteroids' radii, causing the normal vector to continue being calculated
-            // at different angles, causing an orbiting effect
-            // TODO: fix this ^
-
             // determine normal
             Vector2 unitNormal = _position - collider._position;
             unitNormal.Normalize(); // normalize normal
@@ -124,7 +117,7 @@ namespace SpaceWars {
 
         }
 
-        public void resolveCollision ( Weapon collider ) {
+        public void resolveCollision ( Missile collider ) {
             GameScreen.deadAsteroids.Enqueue ( this );
             isAlive = false;
             GameScreen.currentNumAsteroids--;

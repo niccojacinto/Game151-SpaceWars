@@ -10,21 +10,24 @@ using System.Text;
 namespace SpaceWars {
     public class CommandCenter : GameObject {
 
-        Texture2D line;
-        static GraphicsDevice _Device;
+        private Texture2D line; // Line that shows the launch angle of the player
+        private static GameScreen _gameScreen;
+        private static GraphicsDevice _Device;
         private float _launchAngle;
-        public Weapon _currentActive; // Missile currently launched
-        public Weapon _currentWeapon; // Weapon currently selected
+        public Missile _currentActive; // Missile currently launched
+        public Missile _currentWeapon; // Weapon currently selected
         private int hp;
         Texture2D texGeminiMissile;
-        SoundEffect launch;
 
-        public CommandCenter (GraphicsDevice Device, Texture2D texture, Texture2D weapon, Vector2 position)
+        //Dictionary<int, Weapon> weapons;
+
+        public CommandCenter (GameScreen gameScreen, Texture2D texture, Texture2D weapon, Vector2 position)
             :base(texture, position, 0.1f, 0.0f, true, SpriteEffects.None)
         {
+            _gameScreen = gameScreen;
             _position = position;
             _launchAngle = 0.0f;
-            _Device = Device;
+            _Device = Screen.graphics;
             texGeminiMissile = weapon;
             hp = 100;
 
@@ -78,12 +81,16 @@ namespace SpaceWars {
 
             string sHP = hp + "%";
             Vector2 stringSize = GameScreen.fontUI.MeasureString(sHP);
-            spriteBatch.DrawString ( GameScreen.fontUI, 
-                sHP,
+            spriteBatch.DrawString ( GameScreen.fontUI, sHP,
                 new Vector2 ( ( _position.X - stringSize.X / 3 ), ( _position.Y - stringSize.Y - 20) ),
                 color);
 
         }
+
+        /*public Dictionary<int, Weapon> getWeapons () {
+            return weapons;
+        }
+         * */
 
 
         public void AimLeft () {
@@ -95,11 +102,13 @@ namespace SpaceWars {
         }
 
         public void Launch () {
-            _currentActive = new Weapon ( texGeminiMissile, _position, _launchAngle, this );
+            _currentActive = new GeminiMissile( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None  );
+            _gameScreen.playSFX ( "launch" );
         }
 
         public void Hit () {
             hp -= 7;
+            _gameScreen.playSFX ( "explode" );
         }
 
     }

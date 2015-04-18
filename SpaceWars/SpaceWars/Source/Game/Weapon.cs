@@ -7,36 +7,34 @@ using System.Linq;
 using System.Text;
 
 namespace SpaceWars {
-    public class Weapon : GameObject{
+    public class GeminiMissile : Missile{
 
-        private Vector2 _velocity;
-        private float _speedMultiplier;
-        float specialTimer;
+        //private Vector2 _velocity;
+       // private float _speedMultiplier;
+        //float specialTimerDelay;
 
         public CommandCenter Player { get; set; }
 
-        public Weapon (Texture2D texture, Vector2 position, float rotation, CommandCenter player)
-            :base(texture, position, 0.02f, rotation, true, SpriteEffects.None)
+        public GeminiMissile (CommandCenter player, Texture2D texture, Vector2 position, float scale, float rotation, SpriteEffects spriteEffects)
+            :base(player, texture, position, scale, rotation, SpriteEffects.None)
         {
-            specialTimer = 0.25f;
+            specialTimerDelay = 0.25f;
             _position = position;
             _rotation = rotation + (float)( 90 * ( Math.PI / 180 ) ); 
                     // Adjustment of the sprite image because the image is oriented in the wrong direction
-            _speedMultiplier = 2.0f;
+            speedMultiplier = 2.0f;
             Player = player;
-
-
         }
 
-        public virtual void TurnLeft () {
+        public override void TurnLeft () {
             _rotation -= 0.04f;
         }
 
-        public virtual void TurnRight () {
+        public override void TurnRight () {
             _rotation += 0.04f;
         }
 
-        public virtual void Update ( GameTime gameTime ) {
+        public override void Update ( GameTime gameTime ) {
             boxCollider = new Rectangle (
               (int)_position.X,
               (int)_position.Y,
@@ -44,12 +42,12 @@ namespace SpaceWars {
               (int)( _texture.Height * Scale ) );
 
             float elapsed = ((float)gameTime.ElapsedGameTime.Milliseconds) / 1000.0f;
-            specialTimer -= elapsed;
+            specialTimerDelay -= elapsed;
 
             float vX = (float)Math.Cos ( _rotation + (float)( 270 * ( Math.PI / 180 ) ) );
             float vY = (float)Math.Sin ( _rotation + (float)( 270 * ( Math.PI / 180 ) ) );
-            _velocity = new Vector2 ( vX, vY ) * _speedMultiplier;
-            _position += _velocity;
+            velocity = new Vector2 ( vX, vY ) * speedMultiplier;
+            _position += velocity;
 
             foreach ( Asteroid collider in GameScreen.asteroids ) {
                 resolveCollision ( collider );
@@ -67,13 +65,13 @@ namespace SpaceWars {
             }
         }
 
-        public virtual void ActivateSpecial () {
-            if (specialTimer < 0) {
-                _speedMultiplier = 7.0f;
+        public override void ActivateSpecial () {
+            if (specialTimerDelay < 0) {
+                speedMultiplier = 7.0f;
             }
         }
 
-        public void resolveCollision (Asteroid collider) {
+        public override void resolveCollision (Asteroid collider) {
             if ( boxCollider.Intersects ( collider.boxCollider ) && collider.isAlive) {
                 Player._currentActive = null;
                 isAlive = false;
@@ -81,7 +79,7 @@ namespace SpaceWars {
             }
         }
 
-        private void resolveCollision ( CommandCenter collider ) {
+        public override void resolveCollision ( CommandCenter collider ) {
             if ( boxCollider.Intersects ( collider.boxCollider ) ) {
                 if ( Player != collider ) {
                     collider.Hit ();
