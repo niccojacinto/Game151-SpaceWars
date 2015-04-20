@@ -16,7 +16,7 @@ namespace SpaceWars {
         public float radius;
 
         public CrusaderShield (GameScreen screen, CommandCenter player, Texture2D texture, Vector2 position)
-            :base(texture, position, 0.5f, 0.0f, true, SpriteEffects.None)
+            :base(texture, position, 0.2f, 0.0f, true, SpriteEffects.None)
         {
             this._screen = screen;
             _position = position;
@@ -26,13 +26,18 @@ namespace SpaceWars {
         }
 
         public void Update ( GameTime gameTime ) {
-            float elapsed = ( (float)gameTime.ElapsedGameTime.Milliseconds ) / 1000.0f;
+            //float elapsed = ( (float)gameTime.ElapsedGameTime.Milliseconds ) / 1000.0f;
             boxCollider = new Rectangle (
               (int)_position.X,
               (int)_position.Y,
               (int)( _texture.Width * Scale ),
               (int)( _texture.Height * Scale ) );
             _rotation += 0.01f;
+
+            foreach ( Asteroid collider in GameScreen.asteroids ) {
+                resolveCollision ( collider );
+                collider.resolveCollision ( this );
+            }
 
         }
 
@@ -42,7 +47,7 @@ namespace SpaceWars {
             spriteBatch.Draw ( _texture,
                 _position,
                 null,                  // Rectangle <nullable>
-                new Color(75, 75, 230, 200),
+                new Color(200, 200, 255, 255),
                 _rotation,
                 _origin,
                 Scale,
@@ -63,9 +68,21 @@ namespace SpaceWars {
 
         }
 
+        public void resolveCollision ( Asteroid collider ) {
+            if ( !collider.isAlive )
+                return;
+
+            float distance = ( _position - collider.Position ).Length ();
+
+            if ( !( distance < radius + collider.radius ) )
+                return;
+
+            Hit ();
+        }
+
         public void Hit () {
             hp -= 2;
-            //_screen.playSFX ( "explode" );
+            _screen.playSFX ( "explode" );
         }
 
     }

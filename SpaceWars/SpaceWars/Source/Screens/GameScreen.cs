@@ -132,20 +132,16 @@ namespace SpaceWars
                     //       and do all collision checks there
 
                     // Player Updates
+
+
                     player1.Update ( gameTime );
                     player2.Update ( gameTime );
-                    SpawnAsteroids(elapsed);
                     // Asteroid Updates
+
                     foreach ( Asteroid asteroid in asteroids ) {
                         asteroid.Update ( gameTime, graphics );
-                        foreach ( CrusaderShield shield in player1.shields ) {
-                            shield.Update ( gameTime );
-                        }
-                        foreach ( CrusaderShield shield in player2.shields ) {
-                            shield.Update ( gameTime );
-                        }
                     }
-
+                    SpawnAsteroids ( elapsed );
                     UpdateInput ( keyState );
                     
                     break;

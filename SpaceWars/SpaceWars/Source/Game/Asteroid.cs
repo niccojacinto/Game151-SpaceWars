@@ -36,6 +36,8 @@ namespace SpaceWars {
 
         public void Update ( GameTime gameTime, GraphicsDevice Device ) {
 
+
+
             boxCollider = new Rectangle (
               (int)_position.X,
               (int)_position.Y,
@@ -76,18 +78,11 @@ namespace SpaceWars {
                         _velocity = new Vector2 ( _velocity.X, _velocity.Y * -1 );
                 }
             }
-            
 
-            foreach (Asteroid collider in GameScreen.asteroids) {
+            foreach ( Asteroid collider in GameScreen.asteroids ) {
                 resolveCollision ( collider );
             }
 
-            foreach ( CrusaderShield shield in GameScreen.player1.shields ) {
-                resolveCollision ( shield );
-            }
-            foreach ( CrusaderShield shield in GameScreen.player2.shields ) {
-                resolveCollision ( shield );
-            }
             // Set initial velcity for the next timestep, which is current timestep's final velocity
             _initialVelocity = _velocity;
 
@@ -124,14 +119,14 @@ namespace SpaceWars {
         }
 
         public void resolveCollision ( CrusaderShield collider ) {
-            if ( !collider.isAlive )
+            if ( !collider.isAlive || GameScreen.deadAsteroids.Contains(this))
                 return;
 
             float distance = ( _position - collider.Position ).Length ();
 
             if ( !( distance < radius + collider.radius ) )
                 return;
-
+            /*
             // determine normal
             Vector2 unitNormal = _position - collider.Position;
             unitNormal.Normalize (); // normalize normal
@@ -141,11 +136,13 @@ namespace SpaceWars {
             Vector2 velocityNormal = Vector2.Dot ( _initialVelocity, unitNormal ) * unitNormal;
 
             _velocity = _initialVelocity - ( 2 * velocityNormal );
+             */
+
 
             GameScreen.deadAsteroids.Enqueue ( this );
-            isAlive = false;
             GameScreen.currentNumAsteroids--;
-            collider.Hit ();
+            isAlive = false;
+
         }
 
         public void resolveCollision ( Missile collider ) {

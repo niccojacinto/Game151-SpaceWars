@@ -74,6 +74,10 @@ namespace SpaceWars {
             if (_currentActive != null) {
                 _currentActive.Update ( gameTime );
             }
+
+            foreach ( CrusaderShield shield in shields ) {
+                shield.Update ( gameTime );
+            }
         }
 
         void DrawLine ( SpriteBatch sb, Vector2 start ) {
