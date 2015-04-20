@@ -18,12 +18,13 @@ namespace SpaceWars
         private ScreenState currentState;
 
         public static SpriteFont fontUI;
+        private SpriteFont fontCountdown;
 
-        private Texture2D blackTex;
+        private Texture2D blackTex, iconMissileGemini, iconMissilePORT, iconMissileCrusader;
         private int blackTexAlpha;
         private float totalElapsed;
         private string currentCount;
-        private SpriteFont fontCountdown;
+
 
         private float countDownScale;
         private float timer;
@@ -31,6 +32,7 @@ namespace SpaceWars
         private float spawnTimer;
         private SoundEffect sfxCountdown, sfxReady;
         private Random random;
+        private KeyboardState prevState;
 
         private Dictionary<string, SoundEffect> gameSFXs;
 
@@ -46,7 +48,7 @@ namespace SpaceWars
         public static Queue<Asteroid> deadAsteroids;
 
         // Settings
-        private const uint NUM_ASTEROIDS = 25;
+        private const uint NUM_ASTEROIDS = 20;
         public static int currentNumAsteroids;
 
         public GameScreen(Game1 main) : base (main)
@@ -65,6 +67,7 @@ namespace SpaceWars
             currentCount = "3";
             countDownScale = 10.0f;
             timer = 3;
+            prevState = Keyboard.GetState ();
   
         }//public Screen ()
 
@@ -106,6 +109,12 @@ namespace SpaceWars
             gameSFXs = new Dictionary<string, SoundEffect> ();
             gameSFXs.Add ( "launch", content.Load<SoundEffect> ( "Audio/launch" ) );
             gameSFXs.Add ( "explode", content.Load<SoundEffect> ( "Audio/explosion" ) );
+
+            // Initialize UI Textures
+            iconMissileGemini = content.Load<Texture2D> ( "Sprites/UI/GeminiMissileIcon" );
+            iconMissilePORT = content.Load<Texture2D> ( "Sprites/UI/PORTMissileIcon" );
+            iconMissileCrusader = content.Load<Texture2D> ( "Sprites/UI/CrusaderMissileIcon" );
+
 
         }//public override void LoadContent()
 
@@ -202,8 +211,23 @@ namespace SpaceWars
                     player._currentActive.TurnRight();}
 
                 if (keyState.IsKeyDown(primary)) {
-                    player._currentActive.ActivateSpecial();}
+                    player._currentActive.ActivateSpecial();
+                }
             }//else
+
+            KeyboardState newState = Keyboard.GetState ();
+            bool readyToCycleLeft = !prevState.IsKeyDown(Keys.Q);
+            bool readyToCycleRight = !prevState.IsKeyDown ( Keys.E );
+
+            if ( keyState.IsKeyDown ( Keys.Q ) && readyToCycleLeft ) {
+                    player1.cycleWeaponsLeft ();
+            }
+            else if ( keyState.IsKeyDown( Keys.E ) && readyToCycleRight) {
+                    player1.cycleWeaponsRight ();
+            }
+
+            prevState = newState;
+
         }// private void function handlePlayerInput (CommandCenter player, KeyState keyState
 
         public void SpawnAsteroids(float elapsed)
@@ -222,7 +246,7 @@ namespace SpaceWars
                     tmpAsteroid.setProperty(spawnPoint, rot, speed);
                     tmpAsteroid.Mass = mass;
                     currentNumAsteroids++;
-                    spawnTimer = 0.5f;
+                    spawnTimer = 1f;
                    
                 }
             }
@@ -232,15 +256,45 @@ namespace SpaceWars
             gameSFXs[sfxName].Play ();
         }
 
-        public override void Draw()
+        public void drawPlayerUI (SpriteBatch spriteBatch) {
+            int counter = 0;
+            
+            foreach ( CommandCenter.WeaponsList weaponType in  Enum.GetValues(typeof(CommandCenter.WeaponsList) ) ) {
+                int x = 25 + 35 * ( counter % 7 );
+                int y = 25 + 10 * ( counter / 7 );
+                float scale = 0.3f;
+                Vector2 tmpPos = new Vector2 ( x, y );
+                Color color = new Color ( 255, 255, 255, 200 );
+                if ( player1.currentWeapon == weaponType )
+                    color = new Color ( 30, 220, 30, 100 );
+                switch ( weaponType ) {
+                    case CommandCenter.WeaponsList.GEMINI_MISSILE:
+                        spriteBatch.Draw ( iconMissileGemini, tmpPos, null, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0 );
+                        break;
+                    case CommandCenter.WeaponsList.PORT_MISSILE:
+                        spriteBatch.Draw ( iconMissilePORT, tmpPos, null, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0 );
+                        break;
+                    case CommandCenter.WeaponsList.CRUSADER_MISSILE:
+                        spriteBatch.Draw ( iconMissileCrusader, tmpPos, null, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0 );
+                        break;
+                    default:
+                        break;
+                }
+
+                counter++;
+            }
+        }
+
+        public override void Draw ()
         {
             background.Draw(spriteBatch);
-            player1.Draw(spriteBatch);
-            player2.Draw(spriteBatch);
             for (int i = 0; i < NUM_ASTEROIDS; i++)
             {
                 asteroids[i].Draw(spriteBatch);
             }
+            drawPlayerUI ( spriteBatch );
+            player1.Draw ( spriteBatch );
+            player2.Draw ( spriteBatch );
             if ( currentState == ScreenState.FADE_IN )
                 spriteBatch.Draw ( blackTex,
                     new Rectangle ( 0, 0, graphics.Viewport.Width, graphics.Viewport.Height),
@@ -262,6 +316,34 @@ namespace SpaceWars
                     SpriteEffects.None,
                     0 );
             }
+
+            string output = "Gemini Missile: ";
+            switch (player1.currentWeapon) {
+                case CommandCenter.WeaponsList.GEMINI_MISSILE:
+                    output = "Gemini Missile: ";
+                    break;
+                case CommandCenter.WeaponsList.PORT_MISSILE:
+                    output = "PORT Missile: ";
+                    break;
+                case CommandCenter.WeaponsList.CRUSADER_MISSILE:
+                    output = "Crusader Missile: ";
+                    break;
+                default:
+                    break;
+            };
+            stringSize = fontCountdown.MeasureString ( output );
+            tmpVect = new Vector2 ( 25, 60 );
+            output += player1.Weapons[player1.currentWeapon];
+
+            spriteBatch.DrawString ( fontUI,
+                output,
+                tmpVect,
+                Color.LimeGreen,
+                0.0f,
+                Vector2.Zero,
+                1,
+                SpriteEffects.None,
+                0 );
         }//public override void Draw()
 
 

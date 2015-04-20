@@ -29,9 +29,6 @@ namespace SpaceWars {
         float _totalElapsed;
         float _enterTextFrequency; //text flicker
 
-
-
-
         private ScreenState currentState;
 
         public MainMenuScreen (Game1 main) : base (main) 

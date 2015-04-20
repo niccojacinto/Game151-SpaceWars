@@ -10,16 +10,26 @@ using System.Text;
 namespace SpaceWars {
     public class CommandCenter : GameObject {
 
+        public enum WeaponsList {
+            GEMINI_MISSILE,
+            PORT_MISSILE,
+            CRUSADER_MISSILE
+        }
+
         private Texture2D line; // Line that shows the launch angle of the player
         private static GameScreen _gameScreen;
         private static GraphicsDevice _Device;
         private float _launchAngle;
         public Missile _currentActive; // Missile currently launched
-        public Missile _currentWeapon; // Weapon currently selected
+        public WeaponsList currentWeapon; // Weapon currently selected
         private int hp;
         Texture2D texGeminiMissile;
 
-        //Dictionary<int, Weapon> weapons;
+        private Dictionary<WeaponsList, int> weapons;
+        public Dictionary<WeaponsList, int> Weapons {
+            get { return weapons; }
+        }
+
 
         public CommandCenter (GameScreen gameScreen, Texture2D texture, Texture2D weapon, Vector2 position)
             :base(texture, position, 0.1f, 0.0f, true, SpriteEffects.None)
@@ -29,11 +39,17 @@ namespace SpaceWars {
             _launchAngle = 0.0f;
             _Device = Screen.graphics;
             texGeminiMissile = weapon;
+            currentWeapon = WeaponsList.GEMINI_MISSILE;
             hp = 100;
 
             line = new Texture2D ( _Device, 1, 1 );
             line.SetData<Color> (
                 new Color[] { Color.White } );// fill the texture with White
+
+            weapons = new Dictionary<WeaponsList, int> ();
+            weapons.Add ( WeaponsList.GEMINI_MISSILE, 3  );
+            weapons.Add ( WeaponsList.PORT_MISSILE, 0);
+            weapons.Add ( WeaponsList.CRUSADER_MISSILE, 0);
 
         }
 
@@ -50,7 +66,6 @@ namespace SpaceWars {
         }
 
         void DrawLine ( SpriteBatch sb, Vector2 start ) {
-            
             sb.Draw ( line,
                 new Rectangle (// rectangle defines shape of line and position of start of line
                     (int)start.X,
@@ -63,7 +78,6 @@ namespace SpaceWars {
                 new Vector2 ( 0, 0 ), // point in line about which to rotate
                 SpriteEffects.None,
                 0 );
-
         }
 
 
@@ -87,11 +101,25 @@ namespace SpaceWars {
 
         }
 
-        /*public Dictionary<int, Weapon> getWeapons () {
-            return weapons;
+        public void cycleWeaponsLeft () {
+            if ( (int)currentWeapon == 0 ) {
+                return;
+            }
+            int intEnum = (int)( currentWeapon );
+            intEnum--;
+            currentWeapon = (WeaponsList)intEnum;
         }
-         * */
 
+
+        public void cycleWeaponsRight () {
+            //Console.WriteLine ((int)currentWeapon);
+            if ( (int)currentWeapon == ( Enum.GetNames ( typeof ( WeaponsList ) ).Length - 1) ) {
+                return;
+            }
+            int intEnum = (int)( currentWeapon );
+            intEnum++;
+            currentWeapon = (WeaponsList)intEnum;
+        }
 
         public void AimLeft () {
             _launchAngle-=0.1f;
@@ -102,8 +130,18 @@ namespace SpaceWars {
         }
 
         public void Launch () {
-            _currentActive = new GeminiMissile( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None  );
-            _gameScreen.playSFX ( "launch" );
+             if ( weapons[currentWeapon] > 0 ) {
+                weapons[currentWeapon]--;
+                _gameScreen.playSFX ( "launch" );
+                switch ( currentWeapon ) {
+                    case WeaponsList.GEMINI_MISSILE:
+                            _currentActive = new GeminiMissile ( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None );
+                        break;
+                    default:
+                        break;
+                }
+            }
+
         }
 
         public void Hit () {
