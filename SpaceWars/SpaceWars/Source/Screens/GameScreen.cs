@@ -39,7 +39,7 @@ namespace SpaceWars
         Game1 _main;
 
         // Data (assets needed for certain tasks)
-        Texture2D texCommandCenter, texGeminiMissile, texAsteroid;
+        Texture2D texCommandCenter, texGeminiMissile, texAsteroid, texCrusaderShield;
 
         // Entities (anything on the screen)
         GameObject background;
@@ -74,8 +74,8 @@ namespace SpaceWars
         public override void Initialize(){
             asteroids = new List<Asteroid>();
             deadAsteroids = new Queue<Asteroid> ();
-            player1 = new CommandCenter(this, texCommandCenter, texGeminiMissile, new Vector2(100, 100));
-            player2 = new CommandCenter(this, texCommandCenter, texGeminiMissile, new Vector2(1000, 200));
+            player1 = new CommandCenter(this, texCommandCenter, texCrusaderShield, texGeminiMissile, new Vector2(100, 500));
+            player2 = new CommandCenter(this, texCommandCenter, texCrusaderShield, texGeminiMissile, new Vector2(1000, 200));
 
             currentNumAsteroids = 0;
             spawnTimer = 0.0f;
@@ -96,6 +96,7 @@ namespace SpaceWars
             texCommandCenter = content.Load<Texture2D>("Sprites/command_center");
             texGeminiMissile = content.Load<Texture2D>("Sprites/missile");
             texAsteroid = content.Load<Texture2D>("Sprites/asteroid");
+            texCrusaderShield = content.Load<Texture2D> ( "Sprites/crusadershield" );
             blackTex = content.Load<Texture2D> ( "Sprites/black" );
 
             // Fonts
@@ -137,6 +138,12 @@ namespace SpaceWars
                     // Asteroid Updates
                     foreach ( Asteroid asteroid in asteroids ) {
                         asteroid.Update ( gameTime, graphics );
+                        foreach ( CrusaderShield shield in player1.shields ) {
+                            shield.Update ( gameTime );
+                        }
+                        foreach ( CrusaderShield shield in player2.shields ) {
+                            shield.Update ( gameTime );
+                        }
                     }
 
                     UpdateInput ( keyState );
@@ -195,6 +202,12 @@ namespace SpaceWars
         private void handlePlayerInput (CommandCenter player, KeyboardState keyState
                 , Keys left, Keys right, Keys primary)
         {
+
+            KeyboardState newState = Keyboard.GetState ();
+            bool readyToCycleLeft = !prevState.IsKeyDown ( Keys.Q );
+            bool readyToCycleRight = !prevState.IsKeyDown ( Keys.E );
+            bool readyToFire = !prevState.IsKeyDown ( primary );
+
             if (player._currentActive == null)
             {
                 if (keyState.IsKeyDown(left)) {
@@ -210,14 +223,10 @@ namespace SpaceWars
                 else if (keyState.IsKeyDown(right)) {
                     player._currentActive.TurnRight();}
 
-                if (keyState.IsKeyDown(primary)) {
+                if (keyState.IsKeyDown(primary) && readyToFire) {
                     player._currentActive.ActivateSpecial();
                 }
             }//else
-
-            KeyboardState newState = Keyboard.GetState ();
-            bool readyToCycleLeft = !prevState.IsKeyDown(Keys.Q);
-            bool readyToCycleRight = !prevState.IsKeyDown ( Keys.E );
 
             if ( keyState.IsKeyDown ( Keys.Q ) && readyToCycleLeft ) {
                     player1.cycleWeaponsLeft ();
@@ -280,7 +289,6 @@ namespace SpaceWars
                     default:
                         break;
                 }
-
                 counter++;
             }
         }
@@ -292,9 +300,10 @@ namespace SpaceWars
             {
                 asteroids[i].Draw(spriteBatch);
             }
-            drawPlayerUI ( spriteBatch );
+
             player1.Draw ( spriteBatch );
             player2.Draw ( spriteBatch );
+            drawPlayerUI ( spriteBatch );
             if ( currentState == ScreenState.FADE_IN )
                 spriteBatch.Draw ( blackTex,
                     new Rectangle ( 0, 0, graphics.Viewport.Width, graphics.Viewport.Height),
@@ -317,6 +326,7 @@ namespace SpaceWars
                     0 );
             }
 
+            // Weapon Label player 1
             string output = "Gemini Missile: ";
             switch (player1.currentWeapon) {
                 case CommandCenter.WeaponsList.GEMINI_MISSILE:
@@ -344,6 +354,20 @@ namespace SpaceWars
                 1,
                 SpriteEffects.None,
                 0 );
+
+            // Stasis Timer
+            tmpVect = new Vector2 ( 25, 80 );
+            if ( player1.stasisDelay > 0 ) {
+                spriteBatch.DrawString ( fontUI,
+                    "In Stasis: " + player1.stasisDelay,
+                    tmpVect,
+                    Color.Red,
+                    0.0f,
+                    Vector2.Zero,
+                    1,
+                    SpriteEffects.None,
+                    0 );
+            }
         }//public override void Draw()
 
 

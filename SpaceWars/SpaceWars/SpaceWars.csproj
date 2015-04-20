@@ -54,6 +54,9 @@
     <Compile Include="Source\Game\Asteroid.cs" />
     <Compile Include="Source\Game\CommandCenter.cs" />
     <Compile Include="Source\Game1.cs" />
+    <Compile Include="Source\Game\CrusaderMissile.cs" />
+    <Compile Include="Source\Game\CrusaderShield.cs" />
+    <Compile Include="Source\Game\PORTMissile.cs" />
     <Compile Include="Source\Game\GameObject.cs" />
     <Compile Include="Source\Game\Missile.cs" />
     <Compile Include="Source\Program.cs" />
@@ -61,7 +64,7 @@
     <Compile Include="Source\Screens\GameScreen.cs" />
     <Compile Include="Source\Screens\MainMenuScreen.cs" />
     <Compile Include="Source\Screens\Screen.cs" />
-    <Compile Include="Source\Game\Weapon.cs" />
+    <Compile Include="Source\Game\GeminiMissile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
@@ -87,6 +90,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprites\command_center.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprites\crusadershield.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprites\mainmenu.jpeg">

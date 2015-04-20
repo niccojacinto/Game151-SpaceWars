@@ -82,6 +82,12 @@ namespace SpaceWars {
                 resolveCollision ( collider );
             }
 
+            foreach ( CrusaderShield shield in GameScreen.player1.shields ) {
+                resolveCollision ( shield );
+            }
+            foreach ( CrusaderShield shield in GameScreen.player2.shields ) {
+                resolveCollision ( shield );
+            }
             // Set initial velcity for the next timestep, which is current timestep's final velocity
             _initialVelocity = _velocity;
 
@@ -115,6 +121,31 @@ namespace SpaceWars {
 
             _velocity = _initialVelocity - (2 * velocityNormal);
 
+        }
+
+        public void resolveCollision ( CrusaderShield collider ) {
+            if ( !collider.isAlive )
+                return;
+
+            float distance = ( _position - collider.Position ).Length ();
+
+            if ( !( distance < radius + collider.radius ) )
+                return;
+
+            // determine normal
+            Vector2 unitNormal = _position - collider.Position;
+            unitNormal.Normalize (); // normalize normal
+            // ensure asteroids do not stick together or orbit eachother
+            _position = collider.Position + ( ( radius + collider.radius ) * unitNormal );
+            // determine the initial velocity in direction of the normal
+            Vector2 velocityNormal = Vector2.Dot ( _initialVelocity, unitNormal ) * unitNormal;
+
+            _velocity = _initialVelocity - ( 2 * velocityNormal );
+
+            GameScreen.deadAsteroids.Enqueue ( this );
+            isAlive = false;
+            GameScreen.currentNumAsteroids--;
+            collider.Hit ();
         }
 
         public void resolveCollision ( Missile collider ) {

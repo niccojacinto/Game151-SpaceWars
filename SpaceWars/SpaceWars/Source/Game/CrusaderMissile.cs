@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace SpaceWars {
-    public class GeminiMissile : Missile{
+    public class CrusaderMissile : Missile{
 
         //private Vector2 _velocity;
        // private float _speedMultiplier;
@@ -15,10 +15,10 @@ namespace SpaceWars {
 
         public CommandCenter Player { get; set; }
 
-        public GeminiMissile (CommandCenter player, Texture2D texture, Vector2 position, float scale, float rotation, SpriteEffects spriteEffects)
+        public CrusaderMissile (CommandCenter player, Texture2D texture, Vector2 position, float scale, float rotation, SpriteEffects spriteEffects)
             :base(player, texture, position, scale, rotation, SpriteEffects.None)
         {
-            specialTimerDelay = 0.25f;
+            specialTimerDelay = 1.0f;
             _position = position;
             _rotation = rotation + (float)( 90 * ( Math.PI / 180 ) ); 
                     // Adjustment of the sprite image because the image is oriented in the wrong direction
@@ -66,8 +66,10 @@ namespace SpaceWars {
         }
 
         public override void ActivateSpecial () {
-            if (specialTimerDelay < 0) {
-                speedMultiplier = 7.0f;
+            if ( specialTimerDelay < 0 ) {
+                Player.shields.Add ( new CrusaderShield ( CommandCenter._gameScreen, Player, Player.texCrusaderShield, _position ) );
+                Player._currentActive = null;
+                Player.stasisDelay = 1.0f;
             }
         }
 

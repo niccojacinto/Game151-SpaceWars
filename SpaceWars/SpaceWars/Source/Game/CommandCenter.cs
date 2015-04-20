@@ -17,43 +17,54 @@ namespace SpaceWars {
         }
 
         private Texture2D line; // Line that shows the launch angle of the player
-        private static GameScreen _gameScreen;
+        public static GameScreen _gameScreen;
         private static GraphicsDevice _Device;
         private float _launchAngle;
+
+        private int hp;
+        public float stasisDelay;
+
         public Missile _currentActive; // Missile currently launched
         public WeaponsList currentWeapon; // Weapon currently selected
-        private int hp;
-        Texture2D texGeminiMissile;
+        public Texture2D texGeminiMissile, texCrusaderShield;
 
+        public List<CrusaderShield> shields;
         private Dictionary<WeaponsList, int> weapons;
         public Dictionary<WeaponsList, int> Weapons {
             get { return weapons; }
         }
+        
 
 
-        public CommandCenter (GameScreen gameScreen, Texture2D texture, Texture2D weapon, Vector2 position)
+        public CommandCenter (GameScreen gameScreen, Texture2D texture, Texture2D shield, Texture2D weapon, Vector2 position)
             :base(texture, position, 0.1f, 0.0f, true, SpriteEffects.None)
         {
+            stasisDelay = 0;
             _gameScreen = gameScreen;
             _position = position;
             _launchAngle = 0.0f;
             _Device = Screen.graphics;
+            // TODO: Make a list for all textures passed to this class
             texGeminiMissile = weapon;
+            texCrusaderShield = shield;
             currentWeapon = WeaponsList.GEMINI_MISSILE;
             hp = 100;
 
             line = new Texture2D ( _Device, 1, 1 );
             line.SetData<Color> (
                 new Color[] { Color.White } );// fill the texture with White
-
+            shields = new List<CrusaderShield> ();
             weapons = new Dictionary<WeaponsList, int> ();
-            weapons.Add ( WeaponsList.GEMINI_MISSILE, 3  );
-            weapons.Add ( WeaponsList.PORT_MISSILE, 0);
-            weapons.Add ( WeaponsList.CRUSADER_MISSILE, 0);
+            weapons.Add ( WeaponsList.GEMINI_MISSILE, 10  );
+            weapons.Add ( WeaponsList.PORT_MISSILE, 3);
+            weapons.Add ( WeaponsList.CRUSADER_MISSILE, 3);
 
         }
 
         public void Update ( GameTime gameTime ) {
+            float elapsed = ( (float)gameTime.ElapsedGameTime.Milliseconds ) / 1000.0f;
+            if ( stasisDelay > 0 )
+                stasisDelay -= elapsed;
             boxCollider = new Rectangle (
               (int)_position.X,
               (int)_position.Y,
@@ -99,6 +110,10 @@ namespace SpaceWars {
                 new Vector2 ( ( _position.X - stringSize.X / 3 ), ( _position.Y - stringSize.Y - 20) ),
                 color);
 
+            foreach ( CrusaderShield shield in shields ) {
+                shield.Draw ( spriteBatch );
+            }
+
         }
 
         public void cycleWeaponsLeft () {
@@ -130,12 +145,18 @@ namespace SpaceWars {
         }
 
         public void Launch () {
-             if ( weapons[currentWeapon] > 0 ) {
+             if ( weapons[currentWeapon] > 0 && stasisDelay <= 0 ) {
                 weapons[currentWeapon]--;
                 _gameScreen.playSFX ( "launch" );
                 switch ( currentWeapon ) {
                     case WeaponsList.GEMINI_MISSILE:
-                            _currentActive = new GeminiMissile ( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None );
+                        _currentActive = new GeminiMissile ( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None );
+                        break;
+                    case WeaponsList.PORT_MISSILE:
+                        _currentActive = new PORTMissile ( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None );
+                        break;
+                    case WeaponsList.CRUSADER_MISSILE:
+                        _currentActive = new CrusaderMissile ( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None );
                         break;
                     default:
                         break;
