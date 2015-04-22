@@ -9,9 +9,9 @@ using System.Text;
 
 namespace SpaceWars {
     public abstract class Screen {
-        protected ContentManager content;
-        protected GraphicsDevice graphics;
-        protected SpriteBatch spriteBatch;
+        public static ContentManager content;
+        public static GraphicsDevice graphics;
+        public static SpriteBatch spriteBatch;
 
         public Screen (Game1 main) {
             content = Program.game.Content;

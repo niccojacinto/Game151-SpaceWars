@@ -54,13 +54,17 @@
     <Compile Include="Source\Game\Asteroid.cs" />
     <Compile Include="Source\Game\CommandCenter.cs" />
     <Compile Include="Source\Game1.cs" />
+    <Compile Include="Source\Game\CrusaderMissile.cs" />
+    <Compile Include="Source\Game\CrusaderShield.cs" />
+    <Compile Include="Source\Game\PORTMissile.cs" />
     <Compile Include="Source\Game\GameObject.cs" />
+    <Compile Include="Source\Game\Missile.cs" />
     <Compile Include="Source\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Screens\GameScreen.cs" />
     <Compile Include="Source\Screens\MainMenuScreen.cs" />
     <Compile Include="Source\Screens\Screen.cs" />
-    <Compile Include="Source\Game\Weapon.cs" />
+    <Compile Include="Source\Game\GeminiMissile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
@@ -88,6 +92,9 @@
     <Content Include="Content\Sprites\command_center.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Sprites\crusadershield.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Sprites\mainmenu.jpeg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -95,6 +102,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprites\space.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprites\UI\CrusaderMissileIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprites\UI\GeminiMissileIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprites\UI\PORTMissileIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />
@@ -128,6 +144,9 @@
     <None Include="Content\Audio\countdownvoice.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Content\Audio\explosion.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Audio\launch.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -135,9 +154,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\Audio\Music\lonestode.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\Audio\start.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\Fonts\agencyFB.xnb">

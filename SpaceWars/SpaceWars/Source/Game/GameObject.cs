@@ -12,8 +12,8 @@ namespace SpaceWars {
         protected Vector2 _position;
         public Vector2 Position
         {
-            get;
-            set;
+            get { return _position; }
+            set { _position = value; }
         }
         public float Scale;
         protected float _rotation;

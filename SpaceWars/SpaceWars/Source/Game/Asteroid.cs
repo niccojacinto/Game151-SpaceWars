@@ -36,6 +36,8 @@ namespace SpaceWars {
 
         public void Update ( GameTime gameTime, GraphicsDevice Device ) {
 
+
+
             boxCollider = new Rectangle (
               (int)_position.X,
               (int)_position.Y,
@@ -63,25 +65,21 @@ namespace SpaceWars {
                         _velocity = new Vector2 ( _velocity.X * -1, _velocity.Y );
                 }
                 else if ( _position.X - Origin.X * Scale < 0 ) {
-                    // Only bounce it back if velocity is not toward screenspace
                     if (_velocity.X < 0)
                         _velocity = new Vector2 ( _velocity.X * -1, _velocity.Y );
                 }
 
                 if ( _position.Y + Origin.Y * Scale > Device.Viewport.Height ) {
-                    // Only bounce it back if velocity is not toward screenspace
                     if ( _velocity.Y >= 0 )
                         _velocity = new Vector2 ( _velocity.X, _velocity.Y * -1 );
                 }
                 else if ( _position.Y - Origin.Y * Scale  < 0 ) {
-                    // Only bounce it back if velocity is not toward screenspace
                     if (_velocity.Y < 0)
                         _velocity = new Vector2 ( _velocity.X, _velocity.Y * -1 );
                 }
             }
-            
 
-            foreach (Asteroid collider in GameScreen.asteroids) {
+            foreach ( Asteroid collider in GameScreen.asteroids ) {
                 resolveCollision ( collider );
             }
 
@@ -108,10 +106,6 @@ namespace SpaceWars {
             if ( !( distance < radius + collider.radius ) ) 
                 return;
 
-            // asteroids are being forced into other asteroids' radii, causing the normal vector to continue being calculated
-            // at different angles, causing an orbiting effect
-            // TODO: fix this ^
-
             // determine normal
             Vector2 unitNormal = _position - collider._position;
             unitNormal.Normalize(); // normalize normal
@@ -124,7 +118,34 @@ namespace SpaceWars {
 
         }
 
-        public void resolveCollision ( Weapon collider ) {
+        public void resolveCollision ( CrusaderShield collider ) {
+            if ( !collider.isAlive || GameScreen.deadAsteroids.Contains(this))
+                return;
+
+            float distance = ( _position - collider.Position ).Length ();
+
+            if ( !( distance < radius + collider.radius ) )
+                return;
+            /*
+            // determine normal
+            Vector2 unitNormal = _position - collider.Position;
+            unitNormal.Normalize (); // normalize normal
+            // ensure asteroids do not stick together or orbit eachother
+            _position = collider.Position + ( ( radius + collider.radius ) * unitNormal );
+            // determine the initial velocity in direction of the normal
+            Vector2 velocityNormal = Vector2.Dot ( _initialVelocity, unitNormal ) * unitNormal;
+
+            _velocity = _initialVelocity - ( 2 * velocityNormal );
+             */
+
+
+            GameScreen.deadAsteroids.Enqueue ( this );
+            GameScreen.currentNumAsteroids--;
+            isAlive = false;
+
+        }
+
+        public void resolveCollision ( Missile collider ) {
             GameScreen.deadAsteroids.Enqueue ( this );
             isAlive = false;
             GameScreen.currentNumAsteroids--;
