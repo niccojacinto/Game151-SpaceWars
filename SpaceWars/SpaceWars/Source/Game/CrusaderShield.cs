@@ -12,6 +12,7 @@ namespace SpaceWars {
 
         //private static GraphicsDevice _Device;
         GameScreen _screen;
+        CommandCenter _player;
         private int hp;
         public float radius;
 
@@ -22,10 +23,14 @@ namespace SpaceWars {
             _position = position;
             radius = ( _texture.Width * Scale ) / 2;
             hp = 100;
+            _player = player;
 
         }
 
         public void Update ( GameTime gameTime ) {
+            if ( !isAlive ) 
+                _player.shields.Remove ( this );
+            
             //float elapsed = ( (float)gameTime.ElapsedGameTime.Milliseconds ) / 1000.0f;
             boxCollider = new Rectangle (
               (int)_position.X,
@@ -43,6 +48,8 @@ namespace SpaceWars {
 
         public override void Draw (SpriteBatch spriteBatch) {
             //base.Draw (spriteBatch);
+            if ( !isAlive )
+                return;
 
             spriteBatch.Draw ( _texture,
                 _position,
@@ -81,8 +88,11 @@ namespace SpaceWars {
         }
 
         public void Hit () {
-            hp -= 2;
+            hp -= 10;
             _screen.playSFX ( "explode" );
+            if ( hp <= 0 ) {
+                isAlive = false;
+            }
         }
 
     }

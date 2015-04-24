@@ -48,14 +48,14 @@ namespace SpaceWars {
             texGeminiMissile = weapon;
             texCrusaderShield = shield;
             currentWeapon = WeaponsList.GEMINI_MISSILE;
-            hp = 5;
+            hp = 100;
 
             line = new Texture2D ( _Device, 1, 1 );
             line.SetData<Color> (
                 new Color[] { Color.White } );// fill the texture with White
             shields = new List<CrusaderShield> ();
             weapons = new Dictionary<WeaponsList, int> ();
-            weapons.Add ( WeaponsList.GEMINI_MISSILE, 10  );
+            weapons.Add ( WeaponsList.GEMINI_MISSILE, 999  );
             weapons.Add ( WeaponsList.PORT_MISSILE, 3);
             weapons.Add ( WeaponsList.CRUSADER_MISSILE, 3);
 
@@ -76,7 +76,8 @@ namespace SpaceWars {
             }
 
             foreach ( CrusaderShield shield in shields ) {
-                shield.Update ( gameTime );
+                if (shield.isAlive)
+                    shield.Update ( gameTime );
             }
         }
 

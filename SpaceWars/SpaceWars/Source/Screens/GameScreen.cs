@@ -267,7 +267,7 @@ namespace SpaceWars
                 if (spawnTimer <= 0)
                 {
                     Vector2 spawnPoint = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height + 50);
-                    float speed = random.Next(100, 100);
+                    float speed = random.Next(30, 100);
                     float rot = -random.Next(150, 210);
                     float mass = random.Next(1, 5);
 
