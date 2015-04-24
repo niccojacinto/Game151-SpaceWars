@@ -43,6 +43,8 @@ namespace SpaceWars {
                 resolveCollision ( collider );
                 collider.resolveCollision ( this );
             }
+            resolveCollision (GameScreen.player1._currentActive);
+            resolveCollision(GameScreen.player2._currentActive);
 
         }
 
@@ -73,6 +75,17 @@ namespace SpaceWars {
                 new Vector2 ( ( _position.X - stringSize.X / 3 ), ( _position.Y - stringSize.Y - 20) ),
                 color);
 
+        }
+
+        public void resolveCollision( Missile collider ) {
+            if (collider == null)
+                return;
+
+            if (boxCollider.Intersects(collider.boxCollider) && _player != collider.Player) {
+                collider.isAlive = false;
+                collider.Player._currentActive = null;
+                Hit();
+            }
         }
 
         public void resolveCollision ( Asteroid collider ) {

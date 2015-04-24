@@ -82,6 +82,8 @@ namespace SpaceWars {
             foreach ( Asteroid collider in GameScreen.asteroids ) {
                 resolveCollision ( collider );
             }
+            resolveCollision(GameScreen.player1);
+            resolveCollision(GameScreen.player2);
 
             // Set initial velcity for the next timestep, which is current timestep's final velocity
             _initialVelocity = _velocity;
@@ -146,6 +148,21 @@ namespace SpaceWars {
         }
 
         public void resolveCollision ( Missile collider ) {
+            GameScreen.deadAsteroids.Enqueue ( this );
+            isAlive = false;
+            GameScreen.currentNumAsteroids--;
+        }
+
+        public void resolveCollision ( CommandCenter collider ) {
+            if (!isAlive)
+                return;
+
+            float distance = (_position - collider.Position).Length();
+
+            if (!(distance < radius + collider.radius))
+                return;
+
+            collider.Hit();
             GameScreen.deadAsteroids.Enqueue ( this );
             isAlive = false;
             GameScreen.currentNumAsteroids--;

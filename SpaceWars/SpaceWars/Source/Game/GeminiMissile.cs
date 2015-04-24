@@ -13,7 +13,7 @@ namespace SpaceWars {
        // private float _speedMultiplier;
         //float specialTimerDelay;
 
-        public CommandCenter Player { get; set; }
+        // public CommandCenter Player { get; set; }
 
         public GeminiMissile (CommandCenter player, Texture2D texture, Vector2 position, float scale, float rotation, SpriteEffects spriteEffects)
             :base(player, texture, position, scale, rotation, SpriteEffects.None)
@@ -68,6 +68,14 @@ namespace SpaceWars {
         public override void ActivateSpecial () {
             if (specialTimerDelay < 0) {
                 speedMultiplier = 7.0f;
+            }
+        }
+
+        public void resolveCollision(CrusaderShield collider) {
+            if (boxCollider.Intersects(collider.boxCollider) && collider.isAlive) {
+                collider.Hit();
+                Player._currentActive = null;
+                isAlive = false;
             }
         }
 

@@ -20,6 +20,7 @@ namespace SpaceWars {
         public static GameScreen _gameScreen;
         private static GraphicsDevice _Device;
         private float _launchAngle;
+        public float radius;
 
         public int hp;
         public float stasisDelay;
@@ -49,6 +50,7 @@ namespace SpaceWars {
             texCrusaderShield = shield;
             currentWeapon = WeaponsList.GEMINI_MISSILE;
             hp = 100;
+            radius = (_texture.Width * Scale) / 2;
 
             line = new Texture2D ( _Device, 1, 1 );
             line.SetData<Color> (

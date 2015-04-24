@@ -8,7 +8,7 @@ using System.Text;
 namespace SpaceWars {
  public abstract class Missile : GameObject {
 
-        protected CommandCenter Player;
+        public CommandCenter Player;
         protected Vector2 velocity;
         protected float speedMultiplier;
         protected float specialTimerDelay;
