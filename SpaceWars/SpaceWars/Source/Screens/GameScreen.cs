@@ -24,6 +24,7 @@ namespace SpaceWars
         private int blackTexAlpha;
         private float totalElapsed;
         private string currentCount;
+        private string winner;
 
 
         private float countDownScale;
@@ -79,6 +80,7 @@ namespace SpaceWars
 
             currentNumAsteroids = 0;
             spawnTimer = 0.0f;
+            winner = " Wins!";
 
             random = new Random();
 
@@ -143,6 +145,17 @@ namespace SpaceWars
                     }
                     SpawnAsteroids ( elapsed );
                     UpdateInput ( keyState );
+
+                    // Game Over
+                    if (player1.hp <= 0 || player2.hp <= 0)
+                    {
+                        currentState = GameScreen.ScreenState.GAMEOVER;
+                        if (player1.hp <= 0) {
+                            winner = "Player2" + winner;
+                        } else if (player2.hp <= 0) {
+                            winner = "Player1" + winner;
+                        }
+                    }
                     
                     break;
                 case ScreenState.COUNTDOWN:
@@ -287,6 +300,32 @@ namespace SpaceWars
                 }
                 counter++;
             }
+
+            foreach (CommandCenter.WeaponsList weaponType in Enum.GetValues(typeof(CommandCenter.WeaponsList)))
+            {
+                int x = graphics.Viewport.Width + 25 + 35 * (counter % 7) - 275;
+                int y = graphics.Viewport.Height + 25 + 10 * (counter / 7) - 120;
+                float scale = 0.3f;
+                Vector2 tmpPos = new Vector2(x, y);
+                Color color = new Color(255, 255, 255, 200);
+                if (player2.currentWeapon == weaponType)
+                    color = new Color(30, 220, 30, 100);
+                switch (weaponType)
+                {
+                    case CommandCenter.WeaponsList.GEMINI_MISSILE:
+                        spriteBatch.Draw(iconMissileGemini, tmpPos, null, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                        break;
+                    case CommandCenter.WeaponsList.PORT_MISSILE:
+                        spriteBatch.Draw(iconMissilePORT, tmpPos, null, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                        break;
+                    case CommandCenter.WeaponsList.CRUSADER_MISSILE:
+                        spriteBatch.Draw(iconMissileCrusader, tmpPos, null, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                        break;
+                    default:
+                        break;
+                }
+                counter++;
+            }
         }
 
         public override void Draw ()
@@ -322,6 +361,20 @@ namespace SpaceWars
                     0 );
             }
 
+            // GAMEOVER state
+            if (currentState == ScreenState.GAMEOVER)
+            {
+                spriteBatch.DrawString(fontUI,
+                    winner,
+                    tmpVect,
+                    Color.Red,
+                    0.0f,
+                    new Vector2(stringSize.X / 2, stringSize.Y / 2),
+                    10.0f,
+                    SpriteEffects.None,
+                    0);
+            }
+
             // Weapon Label player 1
             string output = "Gemini Missile: ";
             switch (player1.currentWeapon) {
@@ -337,6 +390,7 @@ namespace SpaceWars
                 default:
                     break;
             };
+
             stringSize = fontCountdown.MeasureString ( output );
             tmpVect = new Vector2 ( 25, 60 );
             output += player1.Weapons[player1.currentWeapon];
@@ -350,6 +404,36 @@ namespace SpaceWars
                 1,
                 SpriteEffects.None,
                 0 );
+
+            // Weapon Label player 2
+            string output2 = "Gemini Missile: ";
+            switch (player2.currentWeapon)
+            {
+                case CommandCenter.WeaponsList.GEMINI_MISSILE:
+                    output = "Gemini Missile: ";
+                    break;
+                case CommandCenter.WeaponsList.PORT_MISSILE:
+                    output = "PORT Missile: ";
+                    break;
+                case CommandCenter.WeaponsList.CRUSADER_MISSILE:
+                    output = "Crusader Missile: ";
+                    break;
+                default:
+                    break;
+            };
+
+            tmpVect = new Vector2(graphics.Viewport.Width - 145, graphics.Viewport.Height - 60);
+            output2 += player2.Weapons[player2.currentWeapon];
+
+            spriteBatch.DrawString(fontUI,
+                output2,
+                tmpVect,
+                Color.LimeGreen,
+                0.0f,
+                Vector2.Zero,
+                1,
+                SpriteEffects.None,
+                0);
 
             // Stasis Timer
             tmpVect = new Vector2 ( 25, 80 );
