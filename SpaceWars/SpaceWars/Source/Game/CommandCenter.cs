@@ -21,7 +21,7 @@ namespace SpaceWars {
         private static GraphicsDevice _Device;
         private float _launchAngle;
 
-        private int hp;
+        public int hp;
         public float stasisDelay;
 
         public Missile _currentActive; // Missile currently launched
@@ -48,7 +48,7 @@ namespace SpaceWars {
             texGeminiMissile = weapon;
             texCrusaderShield = shield;
             currentWeapon = WeaponsList.GEMINI_MISSILE;
-            hp = 100;
+            hp = 5;
 
             line = new Texture2D ( _Device, 1, 1 );
             line.SetData<Color> (
