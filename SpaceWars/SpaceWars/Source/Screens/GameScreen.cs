@@ -147,8 +147,7 @@ namespace SpaceWars
                     UpdateInput ( keyState );
 
                     // Game Over
-                    if (player1.hp <= 0 || player2.hp <= 0)
-                    {
+                    if (player1.hp <= 0 || player2.hp <= 0) {
                         currentState = GameScreen.ScreenState.GAMEOVER;
                         if (player1.hp <= 0) {
                             winner = "Player2" + winner;
@@ -194,6 +193,9 @@ namespace SpaceWars
                         sfxCountdown.Play ();
                         //sfxReady.Play ();
                     }
+                    break;
+                case ScreenState.GAMEOVER:
+                    UpdateInput ( keyState );
                     break;
                 default:
                     break;
@@ -242,6 +244,15 @@ namespace SpaceWars
             }
             else if ( keyState.IsKeyDown( Keys.E ) && readyToCycleRight) {
                     player1.cycleWeaponsRight ();
+            }
+
+            switch (currentState) {
+                case ScreenState.GAMEOVER:
+                    if ( keyState.IsKeyDown ( Keys.Enter ) )
+                        _main.setScreen ( new MainMenuScreen ( _main ) );
+                    break;
+                default:
+                    break;
             }
 
             prevState = newState;
@@ -362,6 +373,10 @@ namespace SpaceWars
             }
 
             // GAMEOVER state
+            stringSize = fontUI.MeasureString ( winner ) * 8;
+            tmpVect = new Vector2 ( (graphics.Viewport.Width/2 - stringSize.X/2),
+                                        (graphics.Viewport.Height - stringSize.Y) / 2 );
+
             if (currentState == ScreenState.GAMEOVER)
             {
                 spriteBatch.DrawString(fontUI,
@@ -369,8 +384,8 @@ namespace SpaceWars
                     tmpVect,
                     Color.Red,
                     0.0f,
-                    new Vector2(stringSize.X / 2, stringSize.Y / 2),
-                    10.0f,
+                    Vector2.Zero,
+                    8.0f,
                     SpriteEffects.None,
                     0);
             }
