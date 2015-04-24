@@ -36,8 +36,8 @@ namespace SpaceWars {
 
         public override void Update ( GameTime gameTime ) {
             boxCollider = new Rectangle (
-              (int)_position.X,
-              (int)_position.Y,
+              (int)_position.X - (int)((_texture.Width * Scale) / 2),
+              (int)_position.Y - (int)((_texture.Height * Scale) / 2),
               (int)( _texture.Width * Scale ),
               (int)( _texture.Height * Scale ) );
 

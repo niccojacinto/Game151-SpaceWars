@@ -68,8 +68,8 @@ namespace SpaceWars {
             if ( stasisDelay > 0 )
                 stasisDelay -= elapsed;
             boxCollider = new Rectangle (
-              (int)_position.X,
-              (int)_position.Y,
+              (int)_position.X - (int)((_texture.Width * Scale * 0.75) / 2),
+              (int)_position.Y - (int)((_texture.Height * Scale * 0.75) / 2),
               (int)( _texture.Width * Scale ),
               (int)( _texture.Height * Scale ) );
             _rotation += 0.01f;
@@ -98,6 +98,23 @@ namespace SpaceWars {
                 0 );
         }
 
+        public void GivePowerUp ( WeaponsList weapon ) {
+            /*switch (weapon) {
+                case WeaponsList.GEMINI_MISSILE :
+                    weapons[weapon] += 1;
+                    break;
+
+                case WeaponsList.CRUSADER_MISSILE :
+                    break;
+
+                case WeaponsList.PORT_MISSILE :
+                    break;
+
+                default :
+                    break;
+            } */
+            weapons[weapon] += 1;
+        }
 
         public override void Draw (SpriteBatch spriteBatch) {
             base.Draw (spriteBatch);

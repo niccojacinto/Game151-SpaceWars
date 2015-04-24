@@ -33,8 +33,8 @@ namespace SpaceWars {
             
             //float elapsed = ( (float)gameTime.ElapsedGameTime.Milliseconds ) / 1000.0f;
             boxCollider = new Rectangle (
-              (int)_position.X,
-              (int)_position.Y,
+              (int)_position.X - (int)((_texture.Width * Scale) / 2),
+              (int)_position.Y - (int)((_texture.Height * Scale) / 2),
               (int)( _texture.Width * Scale ),
               (int)( _texture.Height * Scale ) );
             _rotation += 0.01f;

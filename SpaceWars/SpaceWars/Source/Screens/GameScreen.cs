@@ -31,6 +31,7 @@ namespace SpaceWars
         private float timer;
         private float timerDelay = 1;
         private float spawnTimer;
+        private float spawnTimerPowerUp;
         private SoundEffect sfxCountdown, sfxReady;
         private Random random;
         private KeyboardState prevState;
@@ -49,8 +50,10 @@ namespace SpaceWars
         public static Queue<Asteroid> deadAsteroids;
 
         // Settings
-        private const uint NUM_ASTEROIDS = 20;
+        private const uint NUM_ASTEROIDS = 10;
+        private const uint NUM_POWERUPS = 10;
         public static int currentNumAsteroids;
+        public static int currentNumPowerUps;
 
         public GameScreen(Game1 main) : base (main)
         {
@@ -79,7 +82,9 @@ namespace SpaceWars
             player2 = new CommandCenter(this, texCommandCenter, texCrusaderShield, texGeminiMissile, new Vector2(1000, 200));
 
             currentNumAsteroids = 0;
+            currentNumPowerUps = 0;
             spawnTimer = 0.0f;
+            spawnTimerPowerUp = 5.0f;
             winner = " Wins!";
 
             random = new Random();
@@ -89,6 +94,28 @@ namespace SpaceWars
                 Asteroid tmpAsteroid = new Asteroid(texAsteroid, Vector2.Zero);
                 asteroids.Add(tmpAsteroid);
                 deadAsteroids.Enqueue ( tmpAsteroid );
+            }
+
+            for (int i = 0; i < NUM_POWERUPS; i++)
+            {
+                int randPowerUp = random.Next(0, 2);
+                Asteroid tmpPowerUp;
+                switch (randPowerUp)
+                {
+                    case 0 :
+                        tmpPowerUp = new AhhSteroidCrusader(texAsteroid, Vector2.Zero);
+                        asteroids.Add(tmpPowerUp);
+                        deadAsteroids.Enqueue(tmpPowerUp);
+                        break;
+                    case 1 :
+                        tmpPowerUp = new AhhSteroidPORT(texAsteroid, Vector2.Zero);
+                        asteroids.Add(tmpPowerUp);
+                        deadAsteroids.Enqueue(tmpPowerUp);
+                        break;
+                    default :
+                        break;
+                }
+                
             }
 
         }//public override void Initialize(){
@@ -262,21 +289,44 @@ namespace SpaceWars
         public void SpawnAsteroids(float elapsed)
         {
             spawnTimer -= elapsed;
+            spawnTimerPowerUp -= elapsed;
+
             if (currentNumAsteroids < NUM_ASTEROIDS)
             {
                 if (spawnTimer <= 0)
                 {
                     Vector2 spawnPoint = new Vector2(graphics.Viewport.Width / 2, graphics.Viewport.Height + 50);
-                    float speed = random.Next(30, 100);
+                    float speed = random.Next(100, 100);
                     float rot = -random.Next(150, 210);
                     float mass = random.Next(1, 5);
 
                     Asteroid tmpAsteroid = deadAsteroids.Dequeue ();
+                    if (tmpAsteroid.GetType() == typeof(AhhSteroidCrusader))
+                    {       
+                        if (spawnTimerPowerUp <= 0)
+                        {
+                            spawnTimerPowerUp = 5.0f;
+                            currentNumPowerUps++;
+                           /* do
+                            {
+                                deadAsteroids.Enqueue(tmpAsteroid);
+                                tmpAsteroid = deadAsteroids.Dequeue();
+                                flag = NUM_ASTEROIDS > currentNumAsteroids - currentNumPowerUps;
+                            } while ((tmpAsteroid.GetType() == typeof(AhhSteroidCrusader)) && !flag); */
+                        }
+                        else
+                        {
+                            deadAsteroids.Enqueue(tmpAsteroid);
+                            return;
+                        }
+                    }
+
+
+
                     tmpAsteroid.setProperty(spawnPoint, rot, speed);
                     tmpAsteroid.Mass = mass;
                     currentNumAsteroids++;
                     spawnTimer = 1f;
-                   
                 }
             }
         }
@@ -342,7 +392,7 @@ namespace SpaceWars
         public override void Draw ()
         {
             background.Draw(spriteBatch);
-            for (int i = 0; i < NUM_ASTEROIDS; i++)
+            for (int i = 0; i < NUM_ASTEROIDS + NUM_POWERUPS; i++)
             {
                 asteroids[i].Draw(spriteBatch);
             }
