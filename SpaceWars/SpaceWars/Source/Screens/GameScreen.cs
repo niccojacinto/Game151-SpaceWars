@@ -278,9 +278,7 @@ namespace SpaceWars
                 }
             }//else
 
-            Console.WriteLine ( "1. " + keyState.IsKeyDown ( cycleLeft ) + "\n2." + readyToCycleLeft );
             if ( keyState.IsKeyDown (cycleLeft) && readyToCycleLeft ) {
-                  Console.WriteLine ( "Cycled left." );
                     player.cycleWeaponsLeft ();
             }
             else if ( keyState.IsKeyDown(cycleRight) && readyToCycleRight) {
