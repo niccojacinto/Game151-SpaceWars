@@ -245,17 +245,17 @@ namespace SpaceWars
 
         public override void UpdateInput(KeyboardState keyState)
         {
-            handlePlayerInput(player1, keyState, Keys.A, Keys.D, Keys.W);
-            handlePlayerInput(player2, keyState, Keys.NumPad4, Keys.NumPad6, Keys.NumPad8);
+            KeyboardState newState = Keyboard.GetState ();
+            handlePlayerInput ( player1, keyState, Keys.A, Keys.D, Keys.W, Keys.Q, Keys.E );
+            handlePlayerInput( player2, keyState, Keys.NumPad4, Keys.NumPad6, Keys.NumPad8, Keys.NumPad7, Keys.NumPad9);
+            prevState = newState;
         }//public override void UpdateInput(KeyboardState keyState)
 
         private void handlePlayerInput (CommandCenter player, KeyboardState keyState
-                , Keys left, Keys right, Keys primary)
+                , Keys left, Keys right, Keys primary, Keys cycleLeft, Keys cycleRight)
         {
-
-            KeyboardState newState = Keyboard.GetState ();
-            bool readyToCycleLeft = !prevState.IsKeyDown ( Keys.Q );
-            bool readyToCycleRight = !prevState.IsKeyDown ( Keys.E );
+            bool readyToCycleLeft = !prevState.IsKeyDown (cycleLeft );
+            bool readyToCycleRight = !prevState.IsKeyDown (cycleRight);
             bool readyToFire = !prevState.IsKeyDown ( primary );
 
             if (player._currentActive == null)
@@ -278,11 +278,13 @@ namespace SpaceWars
                 }
             }//else
 
-            if ( keyState.IsKeyDown ( Keys.Q ) && readyToCycleLeft ) {
-                    player1.cycleWeaponsLeft ();
+            Console.WriteLine ( "1. " + keyState.IsKeyDown ( cycleLeft ) + "\n2." + readyToCycleLeft );
+            if ( keyState.IsKeyDown (cycleLeft) && readyToCycleLeft ) {
+                  Console.WriteLine ( "Cycled left." );
+                    player.cycleWeaponsLeft ();
             }
-            else if ( keyState.IsKeyDown( Keys.E ) && readyToCycleRight) {
-                    player1.cycleWeaponsRight ();
+            else if ( keyState.IsKeyDown(cycleRight) && readyToCycleRight) {
+                    player.cycleWeaponsRight ();
             }
 
             switch (currentState) {
@@ -294,7 +296,7 @@ namespace SpaceWars
                     break;
             }
 
-            prevState = newState;
+           
 
         }// private void function handlePlayerInput (CommandCenter player, KeyState keyState
 

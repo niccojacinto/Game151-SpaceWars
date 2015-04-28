@@ -141,12 +141,14 @@ namespace SpaceWars {
         }
 
         public void cycleWeaponsLeft () {
+            Console.WriteLine ( "Cycled left2." );
             if ( (int)currentWeapon == 0 ) {
                 return;
             }
             int intEnum = (int)( currentWeapon );
             intEnum--;
             currentWeapon = (WeaponsList)intEnum;
+            Console.WriteLine ( "Cycled left3." );
         }
 
 
