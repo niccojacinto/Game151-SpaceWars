@@ -27,7 +27,7 @@ namespace SpaceWars {
         }
 
         public virtual void Draw ( SpriteBatch spriteBatch ) {
-            Color color = new Color ( Color.LimeGreen, duration);
+            Color color = new Color ( Color.LimeGreen, duration);//test
             spriteBatch.DrawString ( GameScreen.fontUI, "Obtained " + name, Position - SWEEP_CENTER/*Sweep!*/, color );
 
         }                                                                               
