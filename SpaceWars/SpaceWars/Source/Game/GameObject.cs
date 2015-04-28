@@ -28,6 +28,11 @@ namespace SpaceWars {
         public Rectangle boxCollider;
 
         // Base Constructor : Actors & Image Elements
+        public GameObject (Vector2 position) {
+            _position = position;
+            isAlive = true;
+        }
+
         public GameObject ( Texture2D texture, Vector2 position, float scale, float rotation, bool useOrigin, SpriteEffects spriteEffects ) {
             _position = position;
             Scale = scale;

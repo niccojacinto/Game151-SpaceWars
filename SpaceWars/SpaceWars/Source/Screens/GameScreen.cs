@@ -47,6 +47,7 @@ namespace SpaceWars
         GameObject background;
         public static CommandCenter player1, player2;
         public static List<Asteroid> asteroids;
+        public static List<PowerUpText> powerUpText;
         public static Queue<Asteroid> deadAsteroids;
 
         // Settings
@@ -77,6 +78,7 @@ namespace SpaceWars
 
         public override void Initialize(){
             asteroids = new List<Asteroid>();
+            powerUpText = new List<PowerUpText>();
             deadAsteroids = new Queue<Asteroid> ();
             player1 = new CommandCenter(this, texCommandCenter, texCrusaderShield, texGeminiMissile, new Vector2(100, 500));
             player2 = new CommandCenter(this, texCommandCenter, texCrusaderShield, texGeminiMissile, new Vector2(1000, 200));
@@ -170,6 +172,18 @@ namespace SpaceWars
                     foreach ( Asteroid asteroid in asteroids ) {
                         asteroid.Update ( gameTime, graphics );
                     }
+
+                    for (int i = powerUpText.Count - 1; i >= 0; --i) 
+                    {
+                        if ( powerUpText[i].isAlive ) {
+                            powerUpText[i].Update ( elapsed );
+                        }
+                        else {
+                            powerUpText.RemoveAt ( i );
+                        }
+                    }
+
+
                     SpawnAsteroids ( elapsed );
                     UpdateInput ( keyState );
 
@@ -395,6 +409,10 @@ namespace SpaceWars
             for (int i = 0; i < NUM_ASTEROIDS + NUM_POWERUPS; i++)
             {
                 asteroids[i].Draw(spriteBatch);
+            }
+
+            foreach ( PowerUpText txt in powerUpText ) {
+                txt.Draw(spriteBatch);
             }
 
             player1.Draw ( spriteBatch );
