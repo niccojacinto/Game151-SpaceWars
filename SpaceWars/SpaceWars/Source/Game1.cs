@@ -45,7 +45,7 @@ namespace SpaceWars {
         protected override void LoadContent () {
             
             spriteBatch = new SpriteBatch ( GraphicsDevice );
-            activeScreen = new MainMenuScreen(this);
+            activeScreen = new MainMenuScreen();
             music = Content.Load<SoundEffect> ( "Audio/Music/lonestode" );
             setBGM ( music );
 

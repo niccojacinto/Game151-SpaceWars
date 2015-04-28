@@ -17,8 +17,6 @@ namespace SpaceWars {
             FADE_OUT 
         }
 
-        Game1 _main;
-
         GameObject _background;
         Texture2D _blackTex;
         int _blackTexAlpha;
@@ -31,7 +29,7 @@ namespace SpaceWars {
 
         private ScreenState currentState;
 
-        public MainMenuScreen (Game1 main) : base (main) 
+        public MainMenuScreen () : base () 
         {
             _background = new GameObject (
                 content.Load<Texture2D> ( "Sprites/mainmenu" ),
@@ -40,7 +38,6 @@ namespace SpaceWars {
                 0.0f,
                 false,
                 SpriteEffects.FlipHorizontally );
-            _main = main;
             _blackTexAlpha = 255;
             currentState = ScreenState.FADE_IN;
             _enterTextFrequency = 2;
@@ -77,7 +74,7 @@ namespace SpaceWars {
                 case ScreenState.FADE_OUT:
                     _blackTexAlpha += 2;
                     if ( _blackTexAlpha >= 255 )
-                        _main.setScreen ( new GameScreen ( _main ) );
+                        Program.game.setScreen ( new TutorialScreen ( ) );
                     break;
                 default:
                     break;
@@ -87,8 +84,8 @@ namespace SpaceWars {
         public override void UpdateInput ( KeyboardState keyState ) {
             if ( keyState.IsKeyDown ( Keys.Enter ) ) {
                 _enterTextFrequency = 10;
-                _main.stopBGM ();
-                _main.setBGM ( _gameBgm );
+                Program.game.stopBGM ();
+                Program.game.setBGM ( _gameBgm );
                 currentState = ScreenState.FADE_OUT;
             }
         }

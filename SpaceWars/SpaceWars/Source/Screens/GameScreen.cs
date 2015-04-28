@@ -38,7 +38,6 @@ namespace SpaceWars
 
         private Dictionary<string, SoundEffect> gameSFXs;
 
-        Game1 _main;
 
         // Data (assets needed for certain tasks)
         Texture2D texCommandCenter, texGeminiMissile, texAsteroid, texCrusaderShield;
@@ -56,7 +55,7 @@ namespace SpaceWars
         public static int currentNumAsteroids;
         public static int currentNumPowerUps;
 
-        public GameScreen(Game1 main) : base (main)
+        public GameScreen() : base ()
         {
             background = new GameObject(
                 content.Load<Texture2D>("Sprites/space"),
@@ -65,7 +64,6 @@ namespace SpaceWars
                 0.0f,
                 false,
                 SpriteEffects.None);
-            _main = main;
 
             currentState = ScreenState.FADE_IN;
             blackTexAlpha = 255;
@@ -290,7 +288,7 @@ namespace SpaceWars
             switch (currentState) {
                 case ScreenState.GAMEOVER:
                     if ( keyState.IsKeyDown ( Keys.Enter ) )
-                        _main.setScreen ( new MainMenuScreen ( _main ) );
+                        Program.game.setScreen ( new MainMenuScreen ( ) );
                     break;
                 default:
                     break;

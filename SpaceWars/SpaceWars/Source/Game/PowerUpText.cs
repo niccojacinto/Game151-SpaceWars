@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceWars {
     public class PowerUpText : GameObject{
-        private static Vector2 SWEEP_CENTER = new Vector2 ( 50, 0 );
+        private static Vector2 SWEEP_CENTER = new Vector2 ( 50, 0 ); // Used to 'fake' center the text.
         private float duration;
         private String name;
 

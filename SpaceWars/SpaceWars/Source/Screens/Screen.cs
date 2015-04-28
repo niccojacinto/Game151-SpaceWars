@@ -13,7 +13,7 @@ namespace SpaceWars {
         public static GraphicsDevice graphics;
         public static SpriteBatch spriteBatch;
 
-        public Screen (Game1 main) {
+        public Screen () {
             content = Program.game.Content;
             graphics = Program.game.GraphicsDevice;
             spriteBatch = Program.game.spriteBatch;
