@@ -55,6 +55,9 @@ namespace SpaceWars
         public static int currentNumAsteroids;
         public static int currentNumPowerUps;
 
+        public static BasicParticleSystem particleSystem;
+        public static TimeSpan totalParticleTime;
+
         public GameScreen() : base ()
         {
             background = new GameObject(
@@ -145,7 +148,7 @@ namespace SpaceWars
             iconMissilePORT = content.Load<Texture2D> ( "Sprites/UI/PORTMissileIcon" );
             iconMissileCrusader = content.Load<Texture2D> ( "Sprites/UI/CrusaderMissileIcon" );
 
-
+            particleSystem = new BasicParticleSystem ( content.Load<Texture2D> ( "Sprites/fireball" ) );
         }//public override void LoadContent()
 
         public override void Update(GameTime gameTime)
@@ -165,6 +168,11 @@ namespace SpaceWars
 
                     player1.Update ( gameTime );
                     player2.Update ( gameTime );
+
+                    //Update Particle System
+                    totalParticleTime += gameTime.ElapsedGameTime;
+                    particleSystem.Update ( totalParticleTime, gameTime.ElapsedGameTime );
+
                     // Asteroid Updates
 
                     foreach ( Asteroid asteroid in asteroids ) {
@@ -491,13 +499,13 @@ namespace SpaceWars
             switch (player2.currentWeapon)
             {
                 case CommandCenter.WeaponsList.GEMINI_MISSILE:
-                    output = "Gemini Missile: ";
+                    output2 = "Gemini Missile: ";
                     break;
                 case CommandCenter.WeaponsList.PORT_MISSILE:
-                    output = "PORT Missile: ";
+                    output2 = "PORT Missile: ";
                     break;
                 case CommandCenter.WeaponsList.CRUSADER_MISSILE:
-                    output = "Crusader Missile: ";
+                    output2 = "Crusader Missile: ";
                     break;
                 default:
                     break;
@@ -529,6 +537,10 @@ namespace SpaceWars
                     SpriteEffects.None,
                     0 );
             }
+
+            // Draw Particles
+            Console.WriteLine ( "Drawing Particle" );
+            particleSystem.Draw ( spriteBatch );
         }//public override void Draw()
 
 

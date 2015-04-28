@@ -50,6 +50,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\BasicParticleSystem.cs" />
     <Compile Include="Source\Game\Asteroids\AhhSteroidCrusader.cs" />
     <Compile Include="Source\Game\Asteroids\AhhSteroidPORT.cs" />
     <Compile Include="Source\Game\Asteroids\Asteroid.cs" />
@@ -96,6 +97,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprites\crusadershield.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprites\fireball.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprites\mainmenu.jpeg">
