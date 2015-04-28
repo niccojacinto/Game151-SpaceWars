@@ -24,12 +24,14 @@ namespace SpaceWars
         private int blackTexAlpha;
         private float totalElapsed;
         private string currentCount;
+        private string winner;
 
 
         private float countDownScale;
         private float timer;
         private float timerDelay = 1;
         private float spawnTimer;
+        private float spawnTimerPowerUp;
         private SoundEffect sfxCountdown, sfxReady;
         private Random random;
         private KeyboardState prevState;
@@ -48,8 +50,10 @@ namespace SpaceWars
         public static Queue<Asteroid> deadAsteroids;
 
         // Settings
-        private const uint NUM_ASTEROIDS = 20;
+        private const uint NUM_ASTEROIDS = 10;
+        private const uint NUM_POWERUPS = 10;
         public static int currentNumAsteroids;
+        public static int currentNumPowerUps;
 
         public GameScreen(Game1 main) : base (main)
         {
@@ -78,7 +82,10 @@ namespace SpaceWars
             player2 = new CommandCenter(this, texCommandCenter, texCrusaderShield, texGeminiMissile, new Vector2(1000, 200));
 
             currentNumAsteroids = 0;
+            currentNumPowerUps = 0;
             spawnTimer = 0.0f;
+            spawnTimerPowerUp = 5.0f;
+            winner = " Wins!";
 
             random = new Random();
 
@@ -87,6 +94,28 @@ namespace SpaceWars
                 Asteroid tmpAsteroid = new Asteroid(texAsteroid, Vector2.Zero);
                 asteroids.Add(tmpAsteroid);
                 deadAsteroids.Enqueue ( tmpAsteroid );
+            }
+
+            for (int i = 0; i < NUM_POWERUPS; i++)
+            {
+                int randPowerUp = random.Next(0, 2);
+                Asteroid tmpPowerUp;
+                switch (randPowerUp)
+                {
+                    case 0 :
+                        tmpPowerUp = new AhhSteroidCrusader(texAsteroid, Vector2.Zero);
+                        asteroids.Add(tmpPowerUp);
+                        deadAsteroids.Enqueue(tmpPowerUp);
+                        break;
+                    case 1 :
+                        tmpPowerUp = new AhhSteroidPORT(texAsteroid, Vector2.Zero);
+                        asteroids.Add(tmpPowerUp);
+                        deadAsteroids.Enqueue(tmpPowerUp);
+                        break;
+                    default :
+                        break;
+                }
+                
             }
 
         }//public override void Initialize(){
@@ -143,6 +172,16 @@ namespace SpaceWars
                     }
                     SpawnAsteroids ( elapsed );
                     UpdateInput ( keyState );
+
+                    // Game Over
+                    if (player1.hp <= 0 || player2.hp <= 0) {
+                        currentState = GameScreen.ScreenState.GAMEOVER;
+                        if (player1.hp <= 0) {
+                            winner = "Player2" + winner;
+                        } else if (player2.hp <= 0) {
+                            winner = "Player1" + winner;
+                        }
+                    }
                     
                     break;
                 case ScreenState.COUNTDOWN:
@@ -181,6 +220,9 @@ namespace SpaceWars
                         sfxCountdown.Play ();
                         //sfxReady.Play ();
                     }
+                    break;
+                case ScreenState.GAMEOVER:
+                    UpdateInput ( keyState );
                     break;
                 default:
                     break;
@@ -231,6 +273,15 @@ namespace SpaceWars
                     player1.cycleWeaponsRight ();
             }
 
+            switch (currentState) {
+                case ScreenState.GAMEOVER:
+                    if ( keyState.IsKeyDown ( Keys.Enter ) )
+                        _main.setScreen ( new MainMenuScreen ( _main ) );
+                    break;
+                default:
+                    break;
+            }
+
             prevState = newState;
 
         }// private void function handlePlayerInput (CommandCenter player, KeyState keyState
@@ -238,6 +289,8 @@ namespace SpaceWars
         public void SpawnAsteroids(float elapsed)
         {
             spawnTimer -= elapsed;
+            spawnTimerPowerUp -= elapsed;
+
             if (currentNumAsteroids < NUM_ASTEROIDS)
             {
                 if (spawnTimer <= 0)
@@ -248,11 +301,32 @@ namespace SpaceWars
                     float mass = random.Next(1, 5);
 
                     Asteroid tmpAsteroid = deadAsteroids.Dequeue ();
+                    if (tmpAsteroid.GetType() == typeof(AhhSteroidCrusader))
+                    {       
+                        if (spawnTimerPowerUp <= 0)
+                        {
+                            spawnTimerPowerUp = 5.0f;
+                            currentNumPowerUps++;
+                           /* do
+                            {
+                                deadAsteroids.Enqueue(tmpAsteroid);
+                                tmpAsteroid = deadAsteroids.Dequeue();
+                                flag = NUM_ASTEROIDS > currentNumAsteroids - currentNumPowerUps;
+                            } while ((tmpAsteroid.GetType() == typeof(AhhSteroidCrusader)) && !flag); */
+                        }
+                        else
+                        {
+                            deadAsteroids.Enqueue(tmpAsteroid);
+                            return;
+                        }
+                    }
+
+
+
                     tmpAsteroid.setProperty(spawnPoint, rot, speed);
                     tmpAsteroid.Mass = mass;
                     currentNumAsteroids++;
                     spawnTimer = 1f;
-                   
                 }
             }
         }
@@ -287,12 +361,38 @@ namespace SpaceWars
                 }
                 counter++;
             }
+
+            foreach (CommandCenter.WeaponsList weaponType in Enum.GetValues(typeof(CommandCenter.WeaponsList)))
+            {
+                int x = graphics.Viewport.Width + 25 + 35 * (counter % 7) - 275;
+                int y = graphics.Viewport.Height + 25 + 10 * (counter / 7) - 120;
+                float scale = 0.3f;
+                Vector2 tmpPos = new Vector2(x, y);
+                Color color = new Color(255, 255, 255, 200);
+                if (player2.currentWeapon == weaponType)
+                    color = new Color(30, 220, 30, 100);
+                switch (weaponType)
+                {
+                    case CommandCenter.WeaponsList.GEMINI_MISSILE:
+                        spriteBatch.Draw(iconMissileGemini, tmpPos, null, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                        break;
+                    case CommandCenter.WeaponsList.PORT_MISSILE:
+                        spriteBatch.Draw(iconMissilePORT, tmpPos, null, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                        break;
+                    case CommandCenter.WeaponsList.CRUSADER_MISSILE:
+                        spriteBatch.Draw(iconMissileCrusader, tmpPos, null, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                        break;
+                    default:
+                        break;
+                }
+                counter++;
+            }
         }
 
         public override void Draw ()
         {
             background.Draw(spriteBatch);
-            for (int i = 0; i < NUM_ASTEROIDS; i++)
+            for (int i = 0; i < NUM_ASTEROIDS + NUM_POWERUPS; i++)
             {
                 asteroids[i].Draw(spriteBatch);
             }
@@ -322,6 +422,24 @@ namespace SpaceWars
                     0 );
             }
 
+            // GAMEOVER state
+            stringSize = fontUI.MeasureString ( winner ) * 8;
+            tmpVect = new Vector2 ( (graphics.Viewport.Width/2 - stringSize.X/2),
+                                        (graphics.Viewport.Height - stringSize.Y) / 2 );
+
+            if (currentState == ScreenState.GAMEOVER)
+            {
+                spriteBatch.DrawString(fontUI,
+                    winner,
+                    tmpVect,
+                    Color.Red,
+                    0.0f,
+                    Vector2.Zero,
+                    8.0f,
+                    SpriteEffects.None,
+                    0);
+            }
+
             // Weapon Label player 1
             string output = "Gemini Missile: ";
             switch (player1.currentWeapon) {
@@ -337,6 +455,7 @@ namespace SpaceWars
                 default:
                     break;
             };
+
             stringSize = fontCountdown.MeasureString ( output );
             tmpVect = new Vector2 ( 25, 60 );
             output += player1.Weapons[player1.currentWeapon];
@@ -350,6 +469,36 @@ namespace SpaceWars
                 1,
                 SpriteEffects.None,
                 0 );
+
+            // Weapon Label player 2
+            string output2 = "Gemini Missile: ";
+            switch (player2.currentWeapon)
+            {
+                case CommandCenter.WeaponsList.GEMINI_MISSILE:
+                    output = "Gemini Missile: ";
+                    break;
+                case CommandCenter.WeaponsList.PORT_MISSILE:
+                    output = "PORT Missile: ";
+                    break;
+                case CommandCenter.WeaponsList.CRUSADER_MISSILE:
+                    output = "Crusader Missile: ";
+                    break;
+                default:
+                    break;
+            };
+
+            tmpVect = new Vector2(graphics.Viewport.Width - 145, graphics.Viewport.Height - 60);
+            output2 += player2.Weapons[player2.currentWeapon];
+
+            spriteBatch.DrawString(fontUI,
+                output2,
+                tmpVect,
+                Color.LimeGreen,
+                0.0f,
+                Vector2.Zero,
+                1,
+                SpriteEffects.None,
+                0);
 
             // Stasis Timer
             tmpVect = new Vector2 ( 25, 80 );

@@ -20,8 +20,9 @@ namespace SpaceWars {
         public static GameScreen _gameScreen;
         private static GraphicsDevice _Device;
         private float _launchAngle;
+        public float radius;
 
-        private int hp;
+        public int hp;
         public float stasisDelay;
 
         public Missile _currentActive; // Missile currently launched
@@ -49,13 +50,14 @@ namespace SpaceWars {
             texCrusaderShield = shield;
             currentWeapon = WeaponsList.GEMINI_MISSILE;
             hp = 100;
+            radius = (_texture.Width * Scale) / 2;
 
             line = new Texture2D ( _Device, 1, 1 );
             line.SetData<Color> (
                 new Color[] { Color.White } );// fill the texture with White
             shields = new List<CrusaderShield> ();
             weapons = new Dictionary<WeaponsList, int> ();
-            weapons.Add ( WeaponsList.GEMINI_MISSILE, 10  );
+            weapons.Add ( WeaponsList.GEMINI_MISSILE, 999  );
             weapons.Add ( WeaponsList.PORT_MISSILE, 3);
             weapons.Add ( WeaponsList.CRUSADER_MISSILE, 3);
 
@@ -66,8 +68,8 @@ namespace SpaceWars {
             if ( stasisDelay > 0 )
                 stasisDelay -= elapsed;
             boxCollider = new Rectangle (
-              (int)_position.X,
-              (int)_position.Y,
+              (int)_position.X - (int)((_texture.Width * Scale * 0.75) / 2),
+              (int)_position.Y - (int)((_texture.Height * Scale * 0.75) / 2),
               (int)( _texture.Width * Scale ),
               (int)( _texture.Height * Scale ) );
             _rotation += 0.01f;
@@ -76,7 +78,8 @@ namespace SpaceWars {
             }
 
             foreach ( CrusaderShield shield in shields ) {
-                shield.Update ( gameTime );
+                if (shield.isAlive)
+                    shield.Update ( gameTime );
             }
         }
 
@@ -95,6 +98,23 @@ namespace SpaceWars {
                 0 );
         }
 
+        public void GivePowerUp ( WeaponsList weapon ) {
+            /*switch (weapon) {
+                case WeaponsList.GEMINI_MISSILE :
+                    weapons[weapon] += 1;
+                    break;
+
+                case WeaponsList.CRUSADER_MISSILE :
+                    break;
+
+                case WeaponsList.PORT_MISSILE :
+                    break;
+
+                default :
+                    break;
+            } */
+            weapons[weapon] += 1;
+        }
 
         public override void Draw (SpriteBatch spriteBatch) {
             base.Draw (spriteBatch);

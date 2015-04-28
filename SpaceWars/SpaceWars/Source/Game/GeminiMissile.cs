@@ -13,7 +13,7 @@ namespace SpaceWars {
        // private float _speedMultiplier;
         //float specialTimerDelay;
 
-        public CommandCenter Player { get; set; }
+        // public CommandCenter Player { get; set; }
 
         public GeminiMissile (CommandCenter player, Texture2D texture, Vector2 position, float scale, float rotation, SpriteEffects spriteEffects)
             :base(player, texture, position, scale, rotation, SpriteEffects.None)
@@ -36,8 +36,8 @@ namespace SpaceWars {
 
         public override void Update ( GameTime gameTime ) {
             boxCollider = new Rectangle (
-              (int)_position.X,
-              (int)_position.Y,
+              (int)_position.X - (int)((_texture.Width * Scale * 0.75) / 2),
+              (int)_position.Y - (int)((_texture.Height * Scale * 0.75) / 2),
               (int)( _texture.Width * Scale ),
               (int)( _texture.Height * Scale ) );
 
@@ -52,8 +52,12 @@ namespace SpaceWars {
             foreach ( Asteroid collider in GameScreen.asteroids ) {
                 resolveCollision ( collider );
             }
+            // CommandCenter collision check
             resolveCollision ( GameScreen.player1 );
             resolveCollision ( GameScreen.player2 );
+            // Missile to missile collision check
+            resolveCollision(GameScreen.player1._currentActive);
+            resolveCollision(GameScreen.player2._currentActive);
 
             // if missile leaves the game screen, it is no longer the active missile, and is no longer drawn
             if (!Game1.viewportRect.Contains(new Point(
@@ -71,11 +75,33 @@ namespace SpaceWars {
             }
         }
 
+        public void resolveCollision(CrusaderShield collider) {
+            if (boxCollider.Intersects(collider.boxCollider) && collider.isAlive) {
+                collider.Hit();
+                Player._currentActive = null;
+                isAlive = false;
+            }
+        }
+
         public override void resolveCollision (Asteroid collider) {
             if ( boxCollider.Intersects ( collider.boxCollider ) && collider.isAlive) {
                 Player._currentActive = null;
                 isAlive = false;
                 collider.resolveCollision ( this );
+            }
+        }
+
+        public void resolveCollision(Missile collider)
+        {
+            if (collider == this || collider == null)
+                return;
+
+            if (boxCollider.Intersects(collider.boxCollider))
+            {
+                Player._currentActive = null;
+                collider.Player._currentActive = null;
+                isAlive = false;
+                collider.isAlive = false;
             }
         }
 

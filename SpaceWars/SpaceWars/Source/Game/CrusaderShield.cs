@@ -12,6 +12,7 @@ namespace SpaceWars {
 
         //private static GraphicsDevice _Device;
         GameScreen _screen;
+        CommandCenter _player;
         private int hp;
         public float radius;
 
@@ -22,14 +23,18 @@ namespace SpaceWars {
             _position = position;
             radius = ( _texture.Width * Scale ) / 2;
             hp = 100;
+            _player = player;
 
         }
 
         public void Update ( GameTime gameTime ) {
+            if ( !isAlive ) 
+                _player.shields.Remove ( this );
+            
             //float elapsed = ( (float)gameTime.ElapsedGameTime.Milliseconds ) / 1000.0f;
             boxCollider = new Rectangle (
-              (int)_position.X,
-              (int)_position.Y,
+              (int)_position.X - (int)((_texture.Width * Scale) / 2),
+              (int)_position.Y - (int)((_texture.Height * Scale) / 2),
               (int)( _texture.Width * Scale ),
               (int)( _texture.Height * Scale ) );
             _rotation += 0.01f;
@@ -38,11 +43,15 @@ namespace SpaceWars {
                 resolveCollision ( collider );
                 collider.resolveCollision ( this );
             }
+            resolveCollision (GameScreen.player1._currentActive);
+            resolveCollision(GameScreen.player2._currentActive);
 
         }
 
         public override void Draw (SpriteBatch spriteBatch) {
             //base.Draw (spriteBatch);
+            if ( !isAlive )
+                return;
 
             spriteBatch.Draw ( _texture,
                 _position,
@@ -68,6 +77,17 @@ namespace SpaceWars {
 
         }
 
+        public void resolveCollision( Missile collider ) {
+            if (collider == null)
+                return;
+
+            if (boxCollider.Intersects(collider.boxCollider) && _player != collider.Player) {
+                collider.isAlive = false;
+                collider.Player._currentActive = null;
+                Hit();
+            }
+        }
+
         public void resolveCollision ( Asteroid collider ) {
             if ( !collider.isAlive )
                 return;
@@ -81,8 +101,11 @@ namespace SpaceWars {
         }
 
         public void Hit () {
-            hp -= 2;
+            hp -= 10;
             _screen.playSFX ( "explode" );
+            if ( hp <= 0 ) {
+                isAlive = false;
+            }
         }
 
     }
