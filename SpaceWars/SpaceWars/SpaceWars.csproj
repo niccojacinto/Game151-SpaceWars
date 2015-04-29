@@ -50,7 +50,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Source\BasicParticleSystem.cs" />
+    <Compile Include="Source\Game\BasicParticleSystem.cs" />
     <Compile Include="Source\Game\Asteroids\AhhSteroidCrusader.cs" />
     <Compile Include="Source\Game\Asteroids\AhhSteroidPORT.cs" />
     <Compile Include="Source\Game\Asteroids\Asteroid.cs" />
@@ -59,7 +59,7 @@
     <Compile Include="Source\Game\PowerUpText.cs" />
     <Compile Include="Source\Game\Missiles\CrusaderMissile.cs" />
     <Compile Include="Source\Game\Missiles\CrusaderShield.cs" />
-    <Compile Include="Source\PORTMissile.cs" />
+    <Compile Include="Source\Game\Missiles\PORTMissile.cs" />
     <Compile Include="Source\Game\GameObject.cs" />
     <Compile Include="Source\Game\Missiles\Missile.cs" />
     <Compile Include="Source\Program.cs" />
