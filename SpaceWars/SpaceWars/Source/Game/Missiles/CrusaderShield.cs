@@ -24,6 +24,7 @@ namespace SpaceWars {
             radius = ( _texture.Width * Scale ) / 2;
             hp = 100;
             _player = player;
+            GameScreen.gameSFXs["powerup"].Play ();
 
         }
 

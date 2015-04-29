@@ -173,15 +173,18 @@ namespace SpaceWars {
         public void Launch () {
              if ( weapons[currentWeapon] > 0 && stasisDelay <= 0 ) {
                 weapons[currentWeapon]--;
-                GameScreen.gameSFXs["launch"].Play ();
+
                 switch ( currentWeapon ) {
                     case WeaponsList.GEMINI_MISSILE:
+                        GameScreen.gameSFXs["launch"].Play ();
                         _currentActive = new GeminiMissile ( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None );
                         break;
                     case WeaponsList.PORT_MISSILE:
+                        GameScreen.gameSFXs["nuke"].Play ();
                         _currentActive = new PORTMissile ( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None );
                         break;
                     case WeaponsList.CRUSADER_MISSILE:
+                        GameScreen.gameSFXs["nuke"].Play ();
                         _currentActive = new CrusaderMissile ( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None );
                         break;
                     default:
