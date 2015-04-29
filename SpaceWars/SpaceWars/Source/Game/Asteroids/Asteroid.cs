@@ -154,6 +154,7 @@ namespace SpaceWars {
             isAlive = false;
             GameScreen.gameSFXs["explode"].Play ();
             GameScreen.currentNumAsteroids--;
+            GameScreen.particleSystem.AddExplosion2 ( _position );
         }
 
         public void resolveCollision ( CommandCenter collider ) {

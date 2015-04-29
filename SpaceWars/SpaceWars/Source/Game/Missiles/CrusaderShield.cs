@@ -25,6 +25,7 @@ namespace SpaceWars {
             hp = 100;
             _player = player;
             GameScreen.gameSFXs["powerup"].Play ();
+            GameScreen.particleSystem.AddExplosion3 ( _position );
 
         }
 
@@ -86,7 +87,9 @@ namespace SpaceWars {
                 collider.isAlive = false;
                 collider.Player._currentActive = null;
                 Hit();
+                GameScreen.particleSystem.AddExplosion ( collider.Position );
             }
+
         }
 
         public void resolveCollision ( Asteroid collider ) {

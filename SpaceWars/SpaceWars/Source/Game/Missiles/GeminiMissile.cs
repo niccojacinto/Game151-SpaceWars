@@ -80,7 +80,6 @@ namespace SpaceWars {
                 collider.Hit();
                 Player._currentActive = null;
                 isAlive = false;
-                GameScreen.particleSystem.AddExplosion ( _position );
             }
         }
 
