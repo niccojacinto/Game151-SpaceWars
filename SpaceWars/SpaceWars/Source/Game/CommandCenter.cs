@@ -141,19 +141,19 @@ namespace SpaceWars {
         }
 
         public void cycleWeaponsLeft () {
-            Console.WriteLine ( "Cycled left2." );
+            GameScreen.gameSFXs["cycle"].Play ();
             if ( (int)currentWeapon == 0 ) {
                 return;
             }
             int intEnum = (int)( currentWeapon );
             intEnum--;
             currentWeapon = (WeaponsList)intEnum;
-            Console.WriteLine ( "Cycled left3." );
+
         }
 
 
         public void cycleWeaponsRight () {
-            //Console.WriteLine ((int)currentWeapon);
+            GameScreen.gameSFXs["cycle"].Play ();
             if ( (int)currentWeapon == ( Enum.GetNames ( typeof ( WeaponsList ) ).Length - 1) ) {
                 return;
             }
@@ -173,7 +173,7 @@ namespace SpaceWars {
         public void Launch () {
              if ( weapons[currentWeapon] > 0 && stasisDelay <= 0 ) {
                 weapons[currentWeapon]--;
-                _gameScreen.playSFX ( "launch" );
+                GameScreen.gameSFXs["launch"].Play ();
                 switch ( currentWeapon ) {
                     case WeaponsList.GEMINI_MISSILE:
                         _currentActive = new GeminiMissile ( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None );
@@ -193,7 +193,7 @@ namespace SpaceWars {
 
         public void Hit () {
             hp -= 7;
-            _gameScreen.playSFX ( "explode" );
+            GameScreen.gameSFXs["explode"].Play ();
         }
 
     }

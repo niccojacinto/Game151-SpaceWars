@@ -102,7 +102,7 @@ namespace SpaceWars {
 
         public void Hit () {
             hp -= 10;
-            _screen.playSFX ( "explode" );
+            GameScreen.gameSFXs["explode02"].Play ();
             if ( hp <= 0 ) {
                 isAlive = false;
             }

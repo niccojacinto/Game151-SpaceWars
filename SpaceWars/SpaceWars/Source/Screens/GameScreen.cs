@@ -36,7 +36,7 @@ namespace SpaceWars
         private Random random;
         private KeyboardState prevState;
 
-        private Dictionary<string, SoundEffect> gameSFXs;
+        public static Dictionary<string, SoundEffect> gameSFXs;
 
 
         // Data (assets needed for certain tasks)
@@ -142,6 +142,10 @@ namespace SpaceWars
             gameSFXs = new Dictionary<string, SoundEffect> ();
             gameSFXs.Add ( "launch", content.Load<SoundEffect> ( "Audio/launch" ) );
             gameSFXs.Add ( "explode", content.Load<SoundEffect> ( "Audio/explosion" ) );
+            gameSFXs.Add ( "explode02", content.Load<SoundEffect> ( "Audio/explosion02" ) );
+            gameSFXs.Add ( "nuke", content.Load<SoundEffect> ( "Audio/scbwnuke" ) );
+            gameSFXs.Add ( "powerup", content.Load<SoundEffect> ( "Audio/powerup" ) );
+            gameSFXs.Add ( "cycle", content.Load<SoundEffect> ( "Audio/cursormove" ) );
 
             // Initialize UI Textures
             iconMissileGemini = content.Load<Texture2D> ( "Sprites/UI/GeminiMissileIcon" );
@@ -351,9 +355,9 @@ namespace SpaceWars
             }
         }
 
-        public void playSFX ( string sfxName ) {
+        /*public void playSFX ( string sfxName ) {
             gameSFXs[sfxName].Play ();
-        }
+        }*/
 
         public void drawPlayerUI (SpriteBatch spriteBatch) {
             int counter = 0;
@@ -539,7 +543,7 @@ namespace SpaceWars
             }
 
             // Draw Particles
-            Console.WriteLine ( "Drawing Particle" );
+            
             particleSystem.Draw ( spriteBatch );
         }//public override void Draw()
 

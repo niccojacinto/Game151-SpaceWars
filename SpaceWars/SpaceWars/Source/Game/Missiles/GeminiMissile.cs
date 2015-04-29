@@ -114,7 +114,6 @@ namespace SpaceWars {
                     collider.Hit ();
                     Player._currentActive = null;
                     isAlive = false;
-                    Console.WriteLine ( "adding Explosion" );
                     GameScreen.particleSystem.AddExplosion ( _position );
                 }
             }
