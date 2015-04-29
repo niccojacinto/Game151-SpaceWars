@@ -29,6 +29,16 @@ namespace SpaceWars {
 
         }
 
+        public bool isWithinCMRadius ( Vector2 colPosition) {
+
+            float distance = ( _position - colPosition ).Length ();
+
+            if ( !( distance < radius*2 + 100) )
+                return true;
+
+            return false;
+        }
+
         public void Update ( GameTime gameTime ) {
             if ( !isAlive ) 
                 _player.shields.Remove ( this );

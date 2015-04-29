@@ -93,6 +93,32 @@ namespace SpaceWars
             }
         }
 
+        public void AddExplosion2 ( Vector2 position ) {
+            for ( int i = 0; i < 20; i++ ) {
+                Vector2 velocity2 = (float)random.Next ( 300 ) * Vector2.Normalize ( new Vector2 ( (float)( random.NextDouble () - .5 ), (float)( random.NextDouble () - .5 ) ) );
+                particleList.Add ( new Particle (
+                        position,
+                        velocity2,
+                        new Vector4 ( .54f, .27f, 0.07f, 1 ),
+                        new Vector4 ( .54f, .27f, 0.07f, 0f ),
+                        new TimeSpan ( 0, 0, 0, 0, random.Next ( 1000 ) + 500 ) ) );
+                Count++;
+            }
+        }
+
+        public void AddExplosion3 ( Vector2 position ) {
+            for ( int i = 0; i < 1000; i++ ) {
+                Vector2 velocity2 = (float)random.Next ( 100 ) * Vector2.Normalize ( new Vector2 ( (float)( random.NextDouble () - .5 ), (float)( random.NextDouble () - .5 ) ) );
+                particleList.Add ( new Particle (
+                        position,
+                        velocity2,
+                        new Vector4 ( .0f, .0f, 0.9f, 1f ),
+                        new Vector4 ( .0f, .0f, 0.9f, 0f ),
+                        new TimeSpan ( 0, 0, 0, 0, random.Next ( 1000 ) + 500 ) ) );
+                Count++;
+            }
+        }
+
 
         public void Update(TimeSpan time, TimeSpan elapsed)
         {

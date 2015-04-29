@@ -63,6 +63,16 @@ namespace SpaceWars {
 
         }
 
+        public bool isWithinRadius ( Vector2 colPosition, float colRadius ) {
+
+            float distance = ( _position - colPosition ).Length ();
+
+            if ( !( distance < radius + colRadius + 100) )
+                return true;
+
+            return false;
+        }
+
         public void Update ( GameTime gameTime ) {
             float elapsed = ( (float)gameTime.ElapsedGameTime.Milliseconds ) / 1000.0f;
             if ( stasisDelay > 0 )
