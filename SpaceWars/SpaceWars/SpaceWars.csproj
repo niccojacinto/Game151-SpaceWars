@@ -50,22 +50,25 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Source\Game\AhhSteroidCrusader.cs" />
-    <Compile Include="Source\Game\AhhSteroidPORT.cs" />
-    <Compile Include="Source\Game\Asteroid.cs" />
+    <Compile Include="Source\BasicParticleSystem.cs" />
+    <Compile Include="Source\Game\Asteroids\AhhSteroidCrusader.cs" />
+    <Compile Include="Source\Game\Asteroids\AhhSteroidPORT.cs" />
+    <Compile Include="Source\Game\Asteroids\Asteroid.cs" />
     <Compile Include="Source\Game\CommandCenter.cs" />
     <Compile Include="Source\Game1.cs" />
-    <Compile Include="Source\Game\CrusaderMissile.cs" />
-    <Compile Include="Source\Game\CrusaderShield.cs" />
-    <Compile Include="Source\Game\PORTMissile.cs" />
+    <Compile Include="Source\Game\PowerUpText.cs" />
+    <Compile Include="Source\Game\Missiles\CrusaderMissile.cs" />
+    <Compile Include="Source\Game\Missiles\CrusaderShield.cs" />
+    <Compile Include="Source\PORTMissile.cs" />
     <Compile Include="Source\Game\GameObject.cs" />
-    <Compile Include="Source\Game\Missile.cs" />
+    <Compile Include="Source\Game\Missiles\Missile.cs" />
     <Compile Include="Source\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Screens\GameScreen.cs" />
     <Compile Include="Source\Screens\MainMenuScreen.cs" />
     <Compile Include="Source\Screens\Screen.cs" />
-    <Compile Include="Source\Game\GeminiMissile.cs" />
+    <Compile Include="Source\Game\Missiles\GeminiMissile.cs" />
+    <Compile Include="Source\Screens\TutorialScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
@@ -96,6 +99,9 @@
     <Content Include="Content\Sprites\crusadershield.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Sprites\fireball.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Sprites\mainmenu.jpeg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -103,6 +109,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprites\space.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprites\tutorial.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprites\UI\CrusaderMissileIcon.png">

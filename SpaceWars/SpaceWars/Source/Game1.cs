@@ -15,6 +15,7 @@ namespace SpaceWars {
         public GraphicsDeviceManager graphics;
         public SpriteBatch spriteBatch;
         Screen activeScreen;
+        SoundEffect music;
         SoundEffectInstance bgm;
         public static Rectangle viewportRect;
 
@@ -44,8 +45,8 @@ namespace SpaceWars {
         protected override void LoadContent () {
             
             spriteBatch = new SpriteBatch ( GraphicsDevice );
-            activeScreen = new MainMenuScreen(this);
-            SoundEffect music = Content.Load<SoundEffect> ( "Audio/Music/lonestode" );
+            activeScreen = new MainMenuScreen();
+            music = Content.Load<SoundEffect> ( "Audio/Music/lonestode" );
             setBGM ( music );
 
             // TODO: use this.Content to load your game content here
@@ -77,6 +78,11 @@ namespace SpaceWars {
         public void setScreen(Screen screen){
             //TODO destroy/garbage collect active screen..?
             activeScreen = screen;
+            if ( activeScreen.GetType () == typeof ( MainMenuScreen ) ) {
+                stopBGM ();
+                setBGM ( music );
+            }
+
         }//public void setScreen(Screen screen)
 
         public void setBGM ( SoundEffect music ) {

@@ -40,6 +40,7 @@ namespace SpaceWars {
                 return;
             base.resolveCollision(collider);
             collider.Player.GivePowerUp(CommandCenter.WeaponsList.CRUSADER_MISSILE);
+            GameScreen.powerUpText.Add ( new PowerUpText ( this.Position, "Crusader Missile" ) );
             GameScreen.currentNumPowerUps--;
         }
     }

@@ -44,6 +44,7 @@ namespace SpaceWars
                 return;
             base.resolveCollision(collider);
             collider.Player.GivePowerUp(CommandCenter.WeaponsList.PORT_MISSILE);
+            GameScreen.powerUpText.Add ( new PowerUpText ( this.Position, "PORT Missile" ) );
             GameScreen.currentNumPowerUps--;
         }
     }

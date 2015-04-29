@@ -80,6 +80,7 @@ namespace SpaceWars {
                 collider.Hit();
                 Player._currentActive = null;
                 isAlive = false;
+                GameScreen.particleSystem.AddExplosion ( _position );
             }
         }
 
@@ -88,6 +89,7 @@ namespace SpaceWars {
                 Player._currentActive = null;
                 isAlive = false;
                 collider.resolveCollision ( this );
+                GameScreen.particleSystem.AddExplosion ( _position );
             }
         }
 
@@ -102,6 +104,7 @@ namespace SpaceWars {
                 collider.Player._currentActive = null;
                 isAlive = false;
                 collider.isAlive = false;
+                GameScreen.particleSystem.AddExplosion ( _position );
             }
         }
 
@@ -111,6 +114,8 @@ namespace SpaceWars {
                     collider.Hit ();
                     Player._currentActive = null;
                     isAlive = false;
+                    Console.WriteLine ( "adding Explosion" );
+                    GameScreen.particleSystem.AddExplosion ( _position );
                 }
             }
         }

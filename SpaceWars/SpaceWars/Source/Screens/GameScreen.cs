@@ -38,7 +38,6 @@ namespace SpaceWars
 
         private Dictionary<string, SoundEffect> gameSFXs;
 
-        Game1 _main;
 
         // Data (assets needed for certain tasks)
         Texture2D texCommandCenter, texGeminiMissile, texAsteroid, texCrusaderShield;
@@ -47,6 +46,7 @@ namespace SpaceWars
         GameObject background;
         public static CommandCenter player1, player2;
         public static List<Asteroid> asteroids;
+        public static List<PowerUpText> powerUpText;
         public static Queue<Asteroid> deadAsteroids;
 
         // Settings
@@ -55,7 +55,10 @@ namespace SpaceWars
         public static int currentNumAsteroids;
         public static int currentNumPowerUps;
 
-        public GameScreen(Game1 main) : base (main)
+        public static BasicParticleSystem particleSystem;
+        public static TimeSpan totalParticleTime;
+
+        public GameScreen() : base ()
         {
             background = new GameObject(
                 content.Load<Texture2D>("Sprites/space"),
@@ -64,7 +67,6 @@ namespace SpaceWars
                 0.0f,
                 false,
                 SpriteEffects.None);
-            _main = main;
 
             currentState = ScreenState.FADE_IN;
             blackTexAlpha = 255;
@@ -77,6 +79,7 @@ namespace SpaceWars
 
         public override void Initialize(){
             asteroids = new List<Asteroid>();
+            powerUpText = new List<PowerUpText>();
             deadAsteroids = new Queue<Asteroid> ();
             player1 = new CommandCenter(this, texCommandCenter, texCrusaderShield, texGeminiMissile, new Vector2(100, 500));
             player2 = new CommandCenter(this, texCommandCenter, texCrusaderShield, texGeminiMissile, new Vector2(1000, 200));
@@ -145,7 +148,7 @@ namespace SpaceWars
             iconMissilePORT = content.Load<Texture2D> ( "Sprites/UI/PORTMissileIcon" );
             iconMissileCrusader = content.Load<Texture2D> ( "Sprites/UI/CrusaderMissileIcon" );
 
-
+            particleSystem = new BasicParticleSystem ( content.Load<Texture2D> ( "Sprites/fireball" ) );
         }//public override void LoadContent()
 
         public override void Update(GameTime gameTime)
@@ -165,11 +168,28 @@ namespace SpaceWars
 
                     player1.Update ( gameTime );
                     player2.Update ( gameTime );
+
+                    //Update Particle System
+                    totalParticleTime += gameTime.ElapsedGameTime;
+                    particleSystem.Update ( totalParticleTime, gameTime.ElapsedGameTime );
+
                     // Asteroid Updates
 
                     foreach ( Asteroid asteroid in asteroids ) {
                         asteroid.Update ( gameTime, graphics );
                     }
+
+                    for (int i = powerUpText.Count - 1; i >= 0; --i) 
+                    {
+                        if ( powerUpText[i].isAlive ) {
+                            powerUpText[i].Update ( elapsed );
+                        }
+                        else {
+                            powerUpText.RemoveAt ( i );
+                        }
+                    }
+
+
                     SpawnAsteroids ( elapsed );
                     UpdateInput ( keyState );
 
@@ -233,17 +253,17 @@ namespace SpaceWars
 
         public override void UpdateInput(KeyboardState keyState)
         {
-            handlePlayerInput(player1, keyState, Keys.A, Keys.D, Keys.W);
-            handlePlayerInput(player2, keyState, Keys.NumPad4, Keys.NumPad6, Keys.NumPad8);
+            KeyboardState newState = Keyboard.GetState ();
+            handlePlayerInput ( player1, keyState, Keys.A, Keys.D, Keys.W, Keys.Q, Keys.E );
+            handlePlayerInput( player2, keyState, Keys.NumPad4, Keys.NumPad6, Keys.NumPad8, Keys.NumPad7, Keys.NumPad9);
+            prevState = newState;
         }//public override void UpdateInput(KeyboardState keyState)
 
         private void handlePlayerInput (CommandCenter player, KeyboardState keyState
-                , Keys left, Keys right, Keys primary)
+                , Keys left, Keys right, Keys primary, Keys cycleLeft, Keys cycleRight)
         {
-
-            KeyboardState newState = Keyboard.GetState ();
-            bool readyToCycleLeft = !prevState.IsKeyDown ( Keys.Q );
-            bool readyToCycleRight = !prevState.IsKeyDown ( Keys.E );
+            bool readyToCycleLeft = !prevState.IsKeyDown (cycleLeft );
+            bool readyToCycleRight = !prevState.IsKeyDown (cycleRight);
             bool readyToFire = !prevState.IsKeyDown ( primary );
 
             if (player._currentActive == null)
@@ -266,23 +286,23 @@ namespace SpaceWars
                 }
             }//else
 
-            if ( keyState.IsKeyDown ( Keys.Q ) && readyToCycleLeft ) {
-                    player1.cycleWeaponsLeft ();
+            if ( keyState.IsKeyDown (cycleLeft) && readyToCycleLeft ) {
+                    player.cycleWeaponsLeft ();
             }
-            else if ( keyState.IsKeyDown( Keys.E ) && readyToCycleRight) {
-                    player1.cycleWeaponsRight ();
+            else if ( keyState.IsKeyDown(cycleRight) && readyToCycleRight) {
+                    player.cycleWeaponsRight ();
             }
 
             switch (currentState) {
                 case ScreenState.GAMEOVER:
                     if ( keyState.IsKeyDown ( Keys.Enter ) )
-                        _main.setScreen ( new MainMenuScreen ( _main ) );
+                        Program.game.setScreen ( new MainMenuScreen ( ) );
                     break;
                 default:
                     break;
             }
 
-            prevState = newState;
+           
 
         }// private void function handlePlayerInput (CommandCenter player, KeyState keyState
 
@@ -397,6 +417,10 @@ namespace SpaceWars
                 asteroids[i].Draw(spriteBatch);
             }
 
+            foreach ( PowerUpText txt in powerUpText ) {
+                txt.Draw(spriteBatch);
+            }
+
             player1.Draw ( spriteBatch );
             player2.Draw ( spriteBatch );
             drawPlayerUI ( spriteBatch );
@@ -475,13 +499,13 @@ namespace SpaceWars
             switch (player2.currentWeapon)
             {
                 case CommandCenter.WeaponsList.GEMINI_MISSILE:
-                    output = "Gemini Missile: ";
+                    output2 = "Gemini Missile: ";
                     break;
                 case CommandCenter.WeaponsList.PORT_MISSILE:
-                    output = "PORT Missile: ";
+                    output2 = "PORT Missile: ";
                     break;
                 case CommandCenter.WeaponsList.CRUSADER_MISSILE:
-                    output = "Crusader Missile: ";
+                    output2 = "Crusader Missile: ";
                     break;
                 default:
                     break;
@@ -513,6 +537,10 @@ namespace SpaceWars
                     SpriteEffects.None,
                     0 );
             }
+
+            // Draw Particles
+            Console.WriteLine ( "Drawing Particle" );
+            particleSystem.Draw ( spriteBatch );
         }//public override void Draw()
 
 
