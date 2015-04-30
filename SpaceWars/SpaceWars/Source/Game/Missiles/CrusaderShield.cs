@@ -65,7 +65,19 @@ namespace SpaceWars {
             if ( !isAlive )
                 return;
 
-            spriteBatch.Draw ( _texture,
+            if (_player == GameScreen.player2) {
+                spriteBatch.Draw(_texture,
+                    _position,
+                    null,                  // Rectangle <nullable>
+                    new Color(255, 0, 0, 255),
+                    _rotation,
+                    _origin,
+                    Scale,
+                    _spriteEffect,
+                    0);
+            }
+            else {
+                spriteBatch.Draw(_texture,
                 _position,
                 null,                  // Rectangle <nullable>
                 new Color(200, 200, 255, 255),
@@ -73,7 +85,8 @@ namespace SpaceWars {
                 _origin,
                 Scale,
                 _spriteEffect,
-                0 );   
+                0);
+            }
 
             Color color = Color.GreenYellow;
             if ( hp < 20 ) 
