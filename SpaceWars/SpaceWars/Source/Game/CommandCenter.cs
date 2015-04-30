@@ -182,6 +182,7 @@ namespace SpaceWars {
 
         public void Launch () {
              if ( weapons[currentWeapon] > 0 && stasisDelay <= 0 ) {
+                 stasisDelay = 2.0f;
                 weapons[currentWeapon]--;
 
                 switch ( currentWeapon ) {
