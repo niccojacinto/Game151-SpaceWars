@@ -166,7 +166,7 @@ namespace SpaceWars {
             if (!(distance < radius + collider.radius))
                 return;
 
-            collider.Hit();
+            collider.Hit(6);
             GameScreen.deadAsteroids.Enqueue ( this );
             isAlive = false;
             GameScreen.currentNumAsteroids--;

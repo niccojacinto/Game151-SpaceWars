@@ -182,21 +182,24 @@ namespace SpaceWars {
 
         public void Launch () {
              if ( weapons[currentWeapon] > 0 && stasisDelay <= 0 ) {
-                 stasisDelay = 2.0f;
+                 //stasisDelay = 2.0f;
                 weapons[currentWeapon]--;
 
                 switch ( currentWeapon ) {
                     case WeaponsList.GEMINI_MISSILE:
                         GameScreen.gameSFXs["launch"].Play ();
                         _currentActive = new GeminiMissile ( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None );
+                        stasisDelay = 0.75f;
                         break;
                     case WeaponsList.PORT_MISSILE:
                         GameScreen.gameSFXs["nuke"].Play ();
                         _currentActive = new PORTMissile ( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None );
+                        stasisDelay = 2.75f;
                         break;
                     case WeaponsList.CRUSADER_MISSILE:
                         GameScreen.gameSFXs["nuke"].Play ();
                         _currentActive = new CrusaderMissile ( this, texGeminiMissile, _position, 0.02f, _launchAngle, SpriteEffects.None );
+                        stasisDelay = 2.5f;
                         break;
                     default:
                         break;
@@ -205,8 +208,8 @@ namespace SpaceWars {
 
         }
 
-        public void Hit () {
-            hp -= 7;
+        public void Hit (int damage) {
+            hp -= damage;
             GameScreen.gameSFXs["explode"].Play ();
         }
 

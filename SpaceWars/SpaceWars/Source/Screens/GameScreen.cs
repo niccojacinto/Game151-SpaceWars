@@ -50,8 +50,8 @@ namespace SpaceWars
         public static Queue<Asteroid> deadAsteroids;
 
         // Settings
-        private const uint NUM_ASTEROIDS = 10;
-        private const uint NUM_POWERUPS = 10;
+        private const uint NUM_ASTEROIDS = 16;
+        private const uint NUM_POWERUPS = 9;
         public static int currentNumAsteroids;
         public static int currentNumPowerUps;
 
@@ -95,23 +95,32 @@ namespace SpaceWars
             for (int i = 0; i < NUM_ASTEROIDS; i++)
             {
                 Asteroid tmpAsteroid = new Asteroid(texAsteroid, Vector2.Zero);
+                tmpAsteroid.Mass = random.Next(1, 5);
                 asteroids.Add(tmpAsteroid);
                 deadAsteroids.Enqueue ( tmpAsteroid );
             }
 
             for (int i = 0; i < NUM_POWERUPS; i++)
             {
-                int randPowerUp = random.Next(0, 2);
+                int randPowerUp = random.Next(0, 3);
                 Asteroid tmpPowerUp;
                 switch (randPowerUp)
                 {
                     case 0 :
                         tmpPowerUp = new AhhSteroidCrusader(texAsteroid, Vector2.Zero);
+                        tmpPowerUp.Mass = random.Next(1, 8);
                         asteroids.Add(tmpPowerUp);
                         deadAsteroids.Enqueue(tmpPowerUp);
                         break;
                     case 1 :
                         tmpPowerUp = new AhhSteroidPORT(texAsteroid, Vector2.Zero);
+                        tmpPowerUp.Mass = random.Next(1, 8);
+                        asteroids.Add(tmpPowerUp);
+                        deadAsteroids.Enqueue(tmpPowerUp);
+                        break;
+                    case 2 :
+                        tmpPowerUp = new AhhSteroidHealer(texAsteroid, Vector2.Zero);
+                        tmpPowerUp.Mass = 1;
                         asteroids.Add(tmpPowerUp);
                         deadAsteroids.Enqueue(tmpPowerUp);
                         break;

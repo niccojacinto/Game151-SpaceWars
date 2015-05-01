@@ -99,7 +99,7 @@ namespace SpaceWars {
         public override void resolveCollision ( CommandCenter collider ) {
             if ( boxCollider.Intersects ( collider.boxCollider ) ) {
                 if ( Player != collider ) {
-                    collider.Hit ();
+                    collider.Hit(10);
                     Player._currentActive = null;
                     isAlive = false;
                 }

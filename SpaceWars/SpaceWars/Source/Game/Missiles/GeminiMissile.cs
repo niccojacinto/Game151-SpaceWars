@@ -71,7 +71,7 @@ namespace SpaceWars {
 
         public override void ActivateSpecial () {
             if (specialTimerDelay < 0) {
-                speedMultiplier = 7.0f;
+                speedMultiplier = 5.5f;
             }
         }
 
@@ -110,7 +110,7 @@ namespace SpaceWars {
         public override void resolveCollision ( CommandCenter collider ) {
             if ( boxCollider.Intersects ( collider.boxCollider ) ) {
                 if ( Player != collider ) {
-                    collider.Hit ();
+                    collider.Hit (7);
                     Player._currentActive = null;
                     isAlive = false;
                     GameScreen.particleSystem.AddExplosion ( _position );
