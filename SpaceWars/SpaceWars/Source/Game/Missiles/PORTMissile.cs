@@ -18,7 +18,7 @@ namespace SpaceWars {
         public PORTMissile (CommandCenter player, Texture2D texture, Vector2 position, float scale, float rotation, SpriteEffects spriteEffects)
             :base(player, texture, position, scale, rotation, SpriteEffects.None)
         {
-            specialTimerDelay = 3.0f;
+            specialTimerDelay = 0.0f;
             _position = position;
             _rotation = rotation + (float)( 90 * ( Math.PI / 180 ) ); 
                     // Adjustment of the sprite image because the image is oriented in the wrong direction

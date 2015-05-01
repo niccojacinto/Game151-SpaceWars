@@ -99,10 +99,12 @@ namespace SpaceWars {
 
             if (boxCollider.Intersects(collider.boxCollider))
             {
+
                 Player._currentActive = null;
                 collider.Player._currentActive = null;
                 isAlive = false;
                 collider.isAlive = false;
+                GameScreen.gameSFXs["explode02"].Play ();
                 GameScreen.particleSystem.AddExplosion ( _position );
             }
         }

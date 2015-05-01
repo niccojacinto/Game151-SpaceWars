@@ -50,6 +50,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\Game\Asteroids\AhhSteroidHealer.cs" />
     <Compile Include="Source\Game\BasicParticleSystem.cs" />
     <Compile Include="Source\Game\Asteroids\AhhSteroidCrusader.cs" />
     <Compile Include="Source\Game\Asteroids\AhhSteroidPORT.cs" />

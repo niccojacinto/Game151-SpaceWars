@@ -33,7 +33,7 @@ namespace SpaceWars {
 
             float distance = ( _position - colPosition ).Length ();
 
-            if ( !( distance < radius*2 + 100) )
+            if ( !( distance < radius*2 + 20) )
                 return true;
 
             return false;
